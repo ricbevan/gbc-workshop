@@ -106,7 +106,7 @@ class Pallets {
 	}
 	
 	get all() {
-		this.#pallets.sort((a, b) => (parseInt(a.name) < parseInt(b.name)) ? 1 : -1);
+		this.#pallets.sort((a, b) => (parseInt(a.name) > parseInt(b.name)) ? 1 : -1);
 		return this.#pallets;
 	}
 }
