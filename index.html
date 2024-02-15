@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Workshop</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="../css/uikit.min.css" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<script src="../js/uikit.min.js"></script>
+		<script src="../js/uikit-icons.min.js"></script>
+		
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="../media/images/icons/apple-touch-icon-57x57.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../media/images/icons/apple-touch-icon-72x72.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="60x60" href="../media/images/icons/apple-touch-icon-60x60.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="76x76" href="../media/images/icons/apple-touch-icon-76x76.png" />
+		<link rel="icon" type="image/png" href="../media/images/icons/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/png" href="../media/images/icons/favicon-32x32.png" sizes="32x32" />
+		<link rel="icon" type="image/png" href="../media/images/icons/favicon-16x16.png" sizes="16x16" />
+		<link rel="manifest" href="../media/images/icons/manifest.json">
+	</head>
+	<body uk-height-viewport>
+		<div class="uk-section uk-section-secondary uk-light">
+			<div class="uk-container">
+				<div class="uk-position-top-right uk-padding-small" uk-tooltip="title: Not logged in; pos: bottom" id="username"><span uk-icon="user" class="uk-icon-button"></span></div>
+				<h1 class="uk-text-large">Workshop</h1>
+			</div>
+		</div>
+		<div class="uk-section uk-section-default">
+			<div class="uk-container">
+				<ul class="uk-breadcrumb">
+					<li><span>Workshop</span></li>
+				</ul>
+				<div class="uk-child-width-1-3@m uk-grid-small uk-grid-match uk-link-reset" uk-grid><!-- uk-flex-center uk-text-center-->
+					<div>
+						<a href="/job-completion" class="uk-card uk-card-default uk-card-body uk-light uk-card-hover gbc-red">
+							<h3 class="uk-card-title">Job Completion</h3>
+							<p>Mark a job as blasted, coated, checked, etc.</p>
+						</a>
+					</div>
+					<div>
+						<a href="/radiators" class="uk-card uk-card-default uk-card-body uk-light uk-card-hover gbc-orange">
+							<h3 class="uk-card-title">Radiators</h3>
+							<p>Process radiators through the system.</p>
+						</a>
+					</div>
+					<div>
+						<a href="/drivers" class="uk-card uk-card-default uk-card-body uk-light uk-card-hover gbc-yellow">
+							<h3 class="uk-card-title">Drivers</h3>
+							<p>Tools for drivers.</p>
+						</a>
+					</div>
+					<!-- <div>
+						<a href="/checks" class="uk-card uk-card-default uk-card-body uk-light uk-card-hover gbc-green">
+							<h3 class="uk-card-title">Checks</h3>
+							<p>Complete checks on vehicles, stock, systems, etc.</p>
+						</a>
+					</div> -->
+				</div>
+			</div>
+			
+			<div class="uk-modal uk-flex uk-open uk-flex-center uk-overlay-primary uk-text-center uk-flex-middle" id="loading" hidden>
+				<div class="uk-child-width-1-1" uk-grid>
+					<div id="loading-spinner">
+						<span uk-spinner="ratio: 4.5"></span>
+					</div>
+					<div>
+						<p id="loading-message">Loading...</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="/js/gbc.js"></script>
+		<script src="/js/gbc-office.js"></script>
+		<script src="/js/monday.js"></script>
+		<script>
+			getStarted();
+		</script>
+		<script defer data-domain="factory.gbc.uk" data-api="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/event" src="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/script.js"></script>
+	</body>
+</html>

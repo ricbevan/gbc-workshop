@@ -1,0 +1,98 @@
+/* Hide number field up and down buttons */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media only screen and (max-width: 600px) {
+  label, li { /* disable text selection on mobile */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
+}
+
+.uk-button-success {
+  background-color: #32d296;
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.gbc-red *, .gbc-orange *, .gbc-yellow *, .gbc-green *, .gbc-blue *, .gbc-indigo *, .gbc-violet * {
+  color: #fff !important;
+}
+
+.uk-section-secondary .uk-icon-button {
+  background-color: #fff !important;
+}
+
+.uk-icon-button {
+  border: 1px solid #000 !important;
+}
+.uk-icon-button * {
+  color: #000 !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .uk-sticky-fixed { /* sticky subnav on goods out */
+    margin-left: -30px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+}
+
+@media not screen and (max-width: 600px) {
+  .uk-sticky-fixed { /* sticky subnav on goods out */
+    margin-left: -41px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+}
+
+.gbc-box-link, .radiator-info {
+  cursor: pointer;
+}
+
+.has-comment:after {
+  content: '*';
+}
+
+.gbc-orange-pill>.uk-active>a {
+  background-color: #FF5723 !important;
+  color: #FFFFFF !important;
+}
+
+.gbc-radiator-row.uk-background-secondary {
+  color: #fff;
+}
+
+.gbc-red, .gbc-red:hover { background-color: #EB1E63 !important; }
+.gbc-orange, .gbc-orange:hover { background-color: #FF5723 !important; }
+.gbc-yellow, .gbc-yellow:hover { background-color: #FFC10F !important; }
+.gbc-green, .gbc-green:hover { background-color: #49AF51 !important; }
+.gbc-blue, .gbc-blue:hover { background-color: #00A9F4 !important; }
+.gbc-indigo, .gbc-indigo:hover { background-color: #3D51B5 !important; }
+.gbc-violet, .gbc-violet:hover { background-color: #9D27B0 !important; }
+
+#canvas, #signature {
+  border-radius: 15px;
+}
+
+#canvas {
+  cursor: crosshair;
+}
+
+.gbc-radiator-code-to-copy {
+  color: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 0px !important;
+}
+
+.gbc-radiator-code-to-copy::selection {
+    background-color: #ffffff !important;
+    color: #ffffff !important;
+}

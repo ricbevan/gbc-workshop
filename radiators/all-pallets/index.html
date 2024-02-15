@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>All Pallets</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/css/uikit.min.css" />
+		<link rel="stylesheet" href="/css/style.css" />
+		<script src="/js/uikit.min.js"></script>
+		<script src="/js/uikit-icons.min.js"></script>
+		
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="/media/images/icons/apple-touch-icon-57x57.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/media/images/icons/apple-touch-icon-72x72.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="60x60" href="/media/images/icons/apple-touch-icon-60x60.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="76x76" href="/media/images/icons/apple-touch-icon-76x76.png" />
+		<link rel="icon" type="image/png" href="/media/images/icons/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/png" href="/media/images/icons/favicon-32x32.png" sizes="32x32" />
+		<link rel="icon" type="image/png" href="/media/images/icons/favicon-16x16.png" sizes="16x16" />
+		<link rel="manifest" href="/media/images/icons/manifest.json">
+	</head>
+	<body uk-height-viewport>
+		<div class="uk-section gbc-orange">
+			<div class="uk-container">
+				<div class="uk-position-top-right uk-padding-small" uk-tooltip="title: Not logged in; pos: bottom" id="username"><span uk-icon="user" class="uk-icon-button"></span></div>
+				<h1 class="uk-text-large">All Pallets</h1>
+			</div>
+		</div>
+		<div class="uk-section uk-section-default">
+			<div class="uk-container">
+				<ul class="uk-breadcrumb">
+					<li><a href="/">Workshop</a></li>
+					<li><a href="/radiators">Radiators</a></li>
+					<li><span>All Pallets</span></li>
+				</ul>
+				<div class="uk-child-width-1-1 uk-link-reset" uk-grid>
+					<div>
+						<select class="uk-select" id="out-pallet-number"></select>
+					</div>
+				</div>
+				<div class="uk-margin-remove-top uk-background-default uk-child-width-1-2 uk-margin-small-bottom" id="filters" uk-grid hidden uk-sticky style="padding: 10px 0px;">
+					
+				</div>
+				<div class="uk-child-width-1-1" id="page" uk-grid hidden>
+					
+				</div>
+				<div class="uk-alert-danger" id="error" uk-alert hidden>
+					<p></p>
+				</div>
+			</div>
+			
+			<div class="uk-modal uk-flex uk-open uk-flex-center uk-overlay-primary uk-text-center uk-flex-middle" id="loading" hidden>
+				<div class="uk-child-width-1-1" uk-grid>
+					<div id="loading-spinner">
+						<span uk-spinner="ratio: 4.5"></span>
+					</div>
+					<div>
+						<p id="loading-message">Loading...</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="/js/gbc.js"></script>
+		<script src="/js/gbc-office.js"></script>
+		<script src="/js/monday.js"></script>
+		<script src="/radiators/js/radiators.js"></script>
+		<script src="script.js"></script>
+		<script defer data-domain="factory.gbc.uk" data-api="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/event" src="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/script.js"></script>
+	</body>
+</html>

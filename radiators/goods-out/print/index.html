@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Goods Out Label</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/css/uikit.min.css" />
+		<link rel="stylesheet" href="/css/style.css" />
+		<script src="/js/uikit.min.js"></script>
+	</head>
+	<body>
+		<div class="uk-section uk-section-default uk-padding-remove-vertical">
+			<div class="uk-container">
+				<div id="username" hidden></div>
+				<h1 id="pallet-title"></h1>
+				<div class="uk-grid-small uk-child-width-1-1 uk-margin-medium-top" uk-grid>
+					<div><span class="uk-margin-medium-right">Date of inspection .............. / ............... / ...............</div>
+					<div><span class="uk-margin-medium-right">Inspected by ........................................</div>
+				</div>
+				<div class="uk-grid-small" uk-grid>
+					<div class="uk-width-expand" uk-leader>Hook marks</div>
+					<div><span class="uk-margin-medium-right">PASS</span>FAIL</div>
+				</div>
+				<div class="uk-grid-small" uk-grid>
+					<div class="uk-width-expand" uk-leader>Paint in threads</div>
+					<div><span class="uk-margin-medium-right">PASS</span>FAIL</div>
+				</div>
+				<div class="uk-grid-small" uk-grid>
+					<div class="uk-width-expand" uk-leader>Excessive build-up of paint</div>
+					<div><span class="uk-margin-medium-right">PASS</span>FAIL</div>
+				</div>
+				<div class="uk-grid-small" uk-grid>
+					<div class="uk-width-expand" uk-leader>Surface finish/fully painted</div>
+					<div><span class="uk-margin-medium-right">PASS</span>FAIL</div>
+				</div>
+				<div class="uk-grid-small" uk-grid>
+					<div class="uk-width-expand" uk-leader>Bracket inspection</div>
+					<div><span class="uk-margin-medium-right">PASS</span>FAIL</div>
+				</div>
+				<div class="uk-grid-small" uk-grid>
+					<div class="uk-width-expand" uk-leader>Touch-up required</div>
+					<div><span class="uk-margin-medium-right">PASS</span>FAIL</div>
+				</div>
+				<div class="uk-margin-medium-top" id="checksheet">
+				</div>
+			</div>
+		</div>
+		<div class="uk-alert-danger" id="error" uk-alert hidden>
+			<p></p>
+		</div>
+		<script src="/js/gbc.js"></script>
+		<script src="/js/gbc-office.js"></script>
+		<script src="/js/monday.js"></script>
+		<script src="/radiators/js/radiators.js"></script>
+		<script src="script.js"></script>
+		<script defer data-domain="factory.gbc.uk" data-api="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/event" src="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/script.js"></script>
+	</body>
+</html>
