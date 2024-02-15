@@ -61,6 +61,8 @@ function getStarted() {
 			if (page != '/') {
 				window.location.replace('/');
 			}
+			
+			displayError('Not connected [' + userId + ']');
 		}
 		
 		logOn();
