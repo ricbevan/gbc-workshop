@@ -31,15 +31,15 @@ function mondayAPI(query, func) {
 		throw 'No function provided (mondayAPI)';
 	}
 	
-	if (apiKey == undefined) {
-		throw 'No api key provided (mondayAPI)';
+	if (key == undefined) {
+		throw 'No key provided (mondayAPI)';
 	}
 	
 	fetch ("https://api.monday.com/v2", {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/json',
-			'Authorization' : apiKey,
+			'Authorization' : key,
 			'API-Version' : '2024-01'
 		},
 		body: JSON.stringify({

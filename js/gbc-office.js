@@ -1,7 +1,7 @@
 var debuggingOn = false;
 var userId;
 var userName;
-var apiKey;
+var key;
 var loadingCount = 0;
 
 function getLocalStorage(key) {
@@ -26,7 +26,7 @@ function setLocalStorage(key, val) {
 
 function loadLocalVariables() {
 	userId = getLocalStorage('User ID');
-	apiKey = getLocalStorage('API Key');
+	key = getLocalStorage('Key');
 }
 
 function displayError(errorMessage) {

@@ -76,7 +76,27 @@
 		<script src="/js/gbc-office.js"></script>
 		<script src="/js/monday.js"></script>
 		<script>
-			getStarted();
+			document.addEventListener("DOMContentLoaded", function(){
+				
+				if(window.location.hash) {
+					let hash = window.location.hash.substring(1);
+					
+					if (hash == 'clear') {
+						localStorage.removeItem('User ID');
+					}
+					
+					if (hash.includes("-")) {
+						hash = hash.split("-");
+						
+						if (hash.length == 2) {
+							setLocalStorage('Key', hash[0]);
+							setLocalStorage('User ID', hash[1]);
+						}
+					}
+				}
+				
+				getStarted();
+			});
 		</script>
 		<script defer data-domain="factory.gbc.uk" data-api="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/event" src="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/script.js"></script>
 	</body>
