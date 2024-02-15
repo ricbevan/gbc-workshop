@@ -56,7 +56,7 @@ function getStarted() {
 		
 		// if user requests page not index and isn't logged in, redirect them to the index page
 		if ((userId == '') || (userId == null) || (userId == undefined)) {
-			let page = window.location.pathname.split('/').pop().replace('.html', '');
+			let page = window.location.pathname.replace('index.html', '');
 			
 			if (page != '/') {
 				window.location.replace('/');
