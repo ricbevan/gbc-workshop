@@ -41,6 +41,8 @@ function getPurchaseOrderRadiators() {
 	mondayAPI(query, function(data) {
 		let palletsOfRadiators = new PalletsOfRadiators(data);
 		
+		var colourCount = [];
+		
 		var html = '';
 		
 		for (var i = 0; i < palletsOfRadiators.all.length; i++) {
@@ -59,6 +61,17 @@ function getPurchaseOrderRadiators() {
 				html += '<li class="uk-flex uk-flex-middle"> <label class="uk-flex-1">';
 				html += '<input class="uk-checkbox" type="checkbox" id="' + radiator.id + '" data-changed="false"' + checked + disabled + '> [' + radiator.colour + '] ' + radiator.name;
 				html += '</label> <span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span> </li>';
+				
+				let existingColour = colourCount.find(x => x.colour === radiator.colour);
+				
+				// does the pallet number already have a radiator pallet?
+				let existingColourExists = !(existingColour == undefined);
+				
+				if (existingColourExists) {
+					existingColour.count += 1;
+				} else {
+					colourCount.push( { colour: radiator.colour, count: 1 } );
+				}
 			}
 			
 			html += '</ul>';
@@ -67,7 +80,29 @@ function getPurchaseOrderRadiators() {
 		
 		html += '<div><button class="uk-button uk-button-primary uk-width-1-1" id="goods-in-save">Save</button></div>';
 		
-		gbc('#page').html(html).show();
+		colourCount.sort((a, b) => (a.colour > b.colour) ? 1 : -1);
+		
+		var colourHtml = '';
+		colourHtml += ' <div> <ul class="uk-card-secondary uk-padding" uk-accordion> <li> ';
+		colourHtml += ' <a class="uk-accordion-title" href>Colour Count</a> <div class="uk-accordion-content"> ';
+		colourHtml += ' <ul class="uk-list uk-list-divider uk-width-1-1" id="radiator-list"> ';
+		
+		var total = 0;
+		
+		for (var i = 0; i < colourCount.length; i++) {
+			let colour = colourCount[i];
+			colourHtml += '<li>' + colour.count + ' x ' + colour.colour + '</li>';
+			total += parseInt(colour.count);
+		}
+		
+		colourHtml += '<li class="uk-text-bold">';
+		colourHtml += 'Total: ' + total + ' radiator' + ((total == 1) ? '' : 's');
+		colourHtml += ' (' + palletsOfRadiators.all.length + ' pallet' + ((palletsOfRadiators.all.length == 1) ? '' : 's') + ')';
+		colourHtml += '</li>';
+		colourHtml += ' </ul> ';
+		colourHtml += ' </div> </li> </ul> </div> ';
+		
+		gbc('#page').html(colourHtml + html).show();
 		
 		gbc('.radiator-info').on('click', function(e) {
 			let radiatorId = e.target.closest('span').id;
