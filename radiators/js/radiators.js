@@ -138,7 +138,7 @@ class PalletsOfRadiators {
 		let existingRadiatorPallet = this.#palletsOfRadiators.find(x => x.palletNumber === radiatorPalletNumber);
 		
 		// does the pallet number already have a radiator pallet?
-		let existingRadiatorPalletExists = !(existingRadiatorPallet == undefined)
+		let existingRadiatorPalletExists = !(existingRadiatorPallet == undefined);
 		
 		if (existingRadiatorPalletExists) {
 			existingRadiatorPallet.radiators.push(radiator); // add the radiator to the existing radiator pallet
@@ -191,7 +191,7 @@ class Radiator {
 	constructor(radiator) {
 		this.id = radiator.id;
 		this.name = radiator.name;
-		this.colour = columnText(radiator, id_radiatorBoardColour);
+		this.colour = camelCase(columnText(radiator, id_radiatorBoardColour));
 		this.inPallet = columnText(radiator, id_radiatorBoardInPallet);
 		this.received = !(columnText(radiator, id_radiatorBoardOutReceived) == "");
 		this.outPalletId = linkedColumnValue(radiator, id_radiatorBoardOutPallet);

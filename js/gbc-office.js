@@ -85,6 +85,10 @@ function validJson(str) {
 	return true;
 }
 
+function camelCase(str) {
+	return str.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
+}
+
 // ==================================================
 // =============== GET COLUMN VALUES ================
 // ==================================================
