@@ -261,6 +261,35 @@ class Radiators {
 	}
 }
 
+class Update {
+	constructor(update) {
+		this.id = update.id;
+		this.body = update.body;
+		this.createdBy = update.creator.name;
+		this.created = update.created_at;
+		this.itemId = update.item_id;
+	}
+}
+
+class Updates {
+	#updates = [];
+	
+	constructor(data) {
+		let updates = data['data']['boards'][0]['updates'];
+		
+		for (var i = 0; i < updates.length; i++) {
+			let update = updates[i];
+			let newUpdate = new Update(update);
+			this.#updates.push(newUpdate);
+		}
+	}
+	
+	get all() {
+		this.#updates.sort((a, b) => (a.created < b.created) ? 1 : -1);
+		return this.#updates;
+	}
+}
+
 // ==================================================
 // ================ TEXT FUNCTIONS ==================
 // ==================================================
@@ -403,7 +432,7 @@ function addRadiatorComment(radiatorId, func) {
 function rejectRadiator(radiatorId, func) {
 	UIkit.modal.prompt('Reason radiator is rejected:').then(function(update) {
 		if (update != null) {
-			let query = 'mutation { create_update (item_id: ' + radiatorId + ', body: "<p>' + userName + ' [rejected]: ' + update + '</p>") { id } }';
+			let query = 'mutation { create_update (item_id: ' + radiatorId + ', body: "<p>Rejected because ' + update + '</p>") { id } }';
 			
 			mondayAPI(query, function(data) {
 				let radiatorColumnJson = JSON.stringify(' { "' + id_radiatorBoardRejected + '" : { "checked" : "true" } } ');
@@ -425,7 +454,7 @@ function rejectRadiator(radiatorId, func) {
 
 function acceptRadiator(radiatorId, func) {
 	UIkit.modal.confirm('Are you sure you want to remove the rejection from this radiator?').then(function() {
-		let query = 'mutation { create_update (item_id: ' + radiatorId + ', body: "<p>' + userName + ' [approved]</p>") { id } }';
+		let query = 'mutation { create_update (item_id: ' + radiatorId + ', body: "<p>Approved</p>") { id } }';
 		
 		mondayAPI(query, function(data) {
 			let radiatorColumnJson = JSON.stringify(' { "' + id_radiatorBoardRejected + '" : null } ');

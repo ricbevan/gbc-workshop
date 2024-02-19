@@ -31,7 +31,14 @@
 					<li><a href="/">Workshop</a></li>
 					<li><span>Radiators</span></li>
 				</ul>
-				<div class="uk-child-width-1-3@m uk-grid-small uk-grid-match uk-link-reset" id="page" uk-grid><!-- uk-flex-center uk-text-center-->
+				<div class="uk-child-width-1-3@m uk-grid-small uk-grid-match uk-link-reset" id="page" uk-grid>
+					<div class="uk-width-1-1">
+						<a href="./comments">
+							<div class="uk-alert-warning uk-margin-remove" uk-alert>
+								<p id="last-comment"></p>
+							</div>
+						</a>
+					</div>
 					<div>
 						<a href="./goods-in" class="uk-card uk-card-default uk-card-body uk-light uk-card-hover gbc-orange">
 							<h3 class="uk-card-title">Goods In</h3>
@@ -50,8 +57,6 @@
 							<p>Mark pallets as delivered.</p>
 						</a>
 					</div>
-				</div>
-				<div class="uk-child-width-1-3@m uk-grid-small uk-grid-match uk-link-reset" uk-grid><!-- uk-flex-center uk-text-center-->
 					<div>
 						<a href="./all-orders" class="uk-card uk-card-default uk-card-body uk-light uk-card-hover gbc-orange">
 							<h3 class="uk-card-title">All Orders</h3>
@@ -90,8 +95,33 @@
 		<script src="/js/gbc.js"></script>
 		<script src="/js/gbc-office.js"></script>
 		<script src="/js/monday.js"></script>
+		<script src="/radiators/js/radiators.js"></script>
+		<script src="/radiators/js/time.js"></script>
 		<script>
 			getStarted();
+			
+			document.addEventListener("DOMContentLoaded", function() {
+				getComments();
+			});
+			
+			function getComments() {
+				let query = ' query { boards(ids:' + id_radiatorBoard + ') { updates (limit: 1) { body id created_at creator { name } item_id } } } ';
+				
+				mondayAPI(query, function(data) {
+					let updates = new Updates(data);
+					
+					var html = '';
+					
+					if (updates.all.length == 0) {
+						html += 'No comments.';
+					} else {
+						let update = updates.all[0];
+						html += 'Last comment was ' + humanized_time_span(update.created);
+					}
+					
+					gbc('#last-comment').html(html);
+				});
+			}
 		</script>
 		<script defer data-domain="factory.gbc.uk" data-api="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/event" src="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/script.js"></script>
 	</body>
