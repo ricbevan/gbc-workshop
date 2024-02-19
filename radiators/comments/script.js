@@ -2,6 +2,8 @@ getStarted();
 
 document.addEventListener("DOMContentLoaded", function() {
 	getComments();
+	let date = new Date();
+	setLocalStorage('Last Visited Comments', date);
 });
 
 function getComments() {

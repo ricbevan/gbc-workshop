@@ -116,7 +116,15 @@
 						html += 'No comments.';
 					} else {
 						let update = updates.all[0];
-						html += 'Last comment was ' + humanized_time_span(update.created);
+						
+						let lastCheckedDateTime = new Date(getLocalStorage('Last Visited Comments'));
+						let lastCommentDateTime = new Date(update.created);
+						
+						if (lastCommentDateTime > lastCheckedDateTime) {
+							html += 'Un-read comments (' + humanized_time_span(update.created) + ')';
+						} else {
+							html += 'No new comments';
+						}
 					}
 					
 					gbc('#last-comment').html(html);
