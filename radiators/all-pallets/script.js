@@ -41,12 +41,16 @@ function getPalletRadiators() {
 	mondayAPI(query, function(data) {
 		let radiators = new Radiators(data);
 		
-		var colours = [];
-		var pallets = [];
-		
 		var html = '';
 		html += '<div>';
 		html += '<ul class="uk-list uk-list-striped">';
+		
+		if (radiators.all.length == 0) {
+			html += '<li>There are no radiators currently on this pallet.</li>';
+		}
+		
+		var colours = [];
+		var pallets = [];
 		
 		for (var i = 0; i < radiators.all.length; i++) {
 			let radiator = radiators.all[i];

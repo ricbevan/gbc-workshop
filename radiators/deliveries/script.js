@@ -22,7 +22,7 @@ function getDeliveries() {
 		var html = '';
 		
 		if (deliveries.undeliveredCount == 0) {
-			html += '<option value="">All deliveries complete today.</option>';
+			html += '<option value="" selected disabled>All deliveries complete today.</option>';
 		}
 		
 		for (var i = 0; i < deliveries.all.length; i++) {
