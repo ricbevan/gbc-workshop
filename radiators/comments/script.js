@@ -22,7 +22,8 @@ function getComments() {
 			let update = updates.all[i];
 			
 			html += '<div>';
-			html += '<div class="uk-card uk-card-default">';
+			html += '<a href="#" class="uk-link-reset uk-text-uppercase uk-text-meta open-radiator" data-radiator-id="' + update.itemId + '">';
+			html += '<div class="uk-card uk-card-default gbc-box-link">';
 			html += '<div class="uk-card-header">';
 			html += '<h3 class="uk-card-title uk-margin-remove-bottom">' + update.createdBy + '</h3>';
 			html += '<p class="uk-text-meta uk-margin-remove-top">' + humanized_time_span(update.created) + '</p>';
@@ -30,10 +31,8 @@ function getComments() {
 			html += '<div class="uk-card-body">';
 			html += update.body;
 			html += '</div>';
-			html += '<div class="uk-card-footer">';
-			html += '<a href="#" class="uk-link-reset uk-text-uppercase uk-text-meta open-radiator" data-radiator-id="' + update.itemId + '">Open Radiator</a>';
 			html += '</div>';
-			html += '</div>';
+			html += '</a>';
 			html += '</div>';
 		}
 		
