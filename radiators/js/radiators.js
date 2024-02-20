@@ -201,14 +201,7 @@ class Radiator {
 		this.friendlyPurchaseOrderName = fixDate(this.purchaseOrderName);
 		this.rejected = !(columnText(radiator, id_radiatorBoardRejected) == "");
 		this.updates = radiator.updates;
-		
-		var outPallet = linkedColumnText(radiator, id_radiatorBoardOutPallet);
-		
-		if (outPallet != undefined) {
-			outPallet = outPallet[0];
-		}
-		
-		this.outPallet = outPallet;
+		this.outPallet = linkedColumnText(radiator, id_radiatorBoardOutPallet);
 		
 		var status = 'Not received';
 		var icon = 'home';

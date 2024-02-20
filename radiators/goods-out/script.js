@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getPallets() {
-	let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page (query_params: { rules: [ { column_id : "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator:is_empty } ] } ) { items { id name } } } } ';
+	let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page (query_params: { rules: [ { column_id : "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator:is_empty } ] } ) { items { ' + fields_pallets + ' } } } } ';
 	
 	mondayAPI(query, function(data) {
 		let pallets = new Pallets(data);
@@ -42,7 +42,9 @@ function getPallets() {
 		for (var i = 0; i < pallets.all.length; i++) {
 			let pallet = pallets.all[i];
 			
-			html += '<option value="' + pallet.id + '">Pallet ' + parseInt(pallet.name) + '</option>';
+			let radiatorCount = ((pallet.radiatorCount > 0) ? (' (' + pallet.radiatorCount + ' radiator' + ((pallet.radiatorCount == 1) ? '' : 's') + ')') : '');
+			
+			html += '<option value="' + pallet.id + '">Pallet ' + pallet.name + radiatorCount + '</option>';
 		}
 		
 		gbc('#goods-out-pallet').html(html);
@@ -57,7 +59,6 @@ function getRadiators() {
 	let query = ' { boards (ids: [' + id_radiatorBoard + ']) { items_page (limit: 500, query_params: {rules: [{ column_id: "' + id_radiatorBoardOutReceived + '", compare_value: [null], operator:is_not_empty }, { column_id: "' + id_radiatorBoardOutPalletDispatchTime + '", compare_value: [null], operator:is_empty }], operator: and }) { items { ' + fields_radiators + ' } } } } ';
 	
 	mondayAPI(query, function(data) {
-		
 		let radiators = new Radiators(data);
 		
 		var colours = [];

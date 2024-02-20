@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getPallets() {
-	let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page (limit: 500) { items { id name } } } } ';
+	let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page (limit: 500) { items { ' + fields_pallets + ' } } } } ';
 	
 	mondayAPI(query, function(data) {
 		let pallets = new Pallets(data);
@@ -24,7 +24,9 @@ function getPallets() {
 		for (var i = 0; i < pallets.all.length; i++) {
 			let pallet = pallets.all[i];
 			
-			html += '<option value="' + pallet.id + '">Pallet ' + pallet.name + '</option>';
+			let radiatorCount = ((pallet.radiatorCount > 0) ? (' (' + pallet.radiatorCount + ' radiator' + ((pallet.radiatorCount == 1) ? '' : 's') + ')') : '');
+			
+			html += '<option value="' + pallet.id + '">Pallet ' + pallet.name + radiatorCount + '</option>';
 		}
 		
 		gbc('#out-pallet-number').html(html);

@@ -87,10 +87,6 @@ function getDelivery() {
 				document.getElementById('signature').setAttribute('src', decodeURIComponent(delivery.signature));
 			}
 			
-			gbc('#save-pod').on('click', function(e) {
-				saveDelivery();
-			});
-			
 			gbc('#clear-signature').on('click', function(e) {
 				initialiseSignature();
 			});
