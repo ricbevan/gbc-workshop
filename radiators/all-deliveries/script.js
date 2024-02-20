@@ -61,10 +61,29 @@ function getDelivery() {
 				html += '<dd>' + delivery.driver + '</dd>';
 			}
 			
-			html += '<dt>Radiators</dt>';
-			html += '<dd>' + decodeURIComponent(delivery.radiators) + '</dd>';
+			html += '<dt>Pallets</dt>';
+			html += '<dd><ul class="uk-list uk-list-striped">';
 			
+			let pallets = delivery.pallets.split(', ');
+			
+			if (delivery.pallets == '') {
+				html += '<li>There are currently no pallets on this delivery.</li>';
+			} else {
+				for (var i = 0; i < pallets.length; i++) {
+					let pallet = pallets[i];
+					html += '<li>Pallet ' + pallet + '</li>';
+				}
+			}
+			
+			html += '</ul></dd>';
 			html += '</dl> </div>';
+			
+			if (delivery.radiators != '') {
+				html += ' <div class="uk-margin-remove"> <ul uk-accordion> <li> ';
+				html += ' <a class="uk-accordion-title uk-text-uppercase uk-text-small" href>Radiators</a> <p class="uk-accordion-content"> ';
+				html += decodeURIComponent(delivery.radiators);
+				html += ' </p> </li> </ul> </div> ';
+			}
 			
 			html += '<div class="uk-flex uk-flex-center uk-margin-top">';
 			

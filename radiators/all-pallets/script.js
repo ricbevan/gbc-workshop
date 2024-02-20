@@ -24,7 +24,7 @@ function getPallets() {
 		for (var i = 0; i < pallets.all.length; i++) {
 			let pallet = pallets.all[i];
 			
-			let radiatorCount = ((pallet.radiatorCount > 0) ? (' (' + pallet.radiatorCount + ' radiator' + ((pallet.radiatorCount == 1) ? '' : 's') + ')') : '');
+			let radiatorCount = ((pallet.radiatorCount > 0) ? (' (' + pallet.radiatorText + ')') : '');
 			
 			html += '<option value="' + pallet.id + '">Pallet ' + pallet.name + radiatorCount + '</option>';
 		}
