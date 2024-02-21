@@ -28,6 +28,13 @@ let fields_radiators = 'id name updates(limit: 50) { body } group { title } colu
 let fields_pallets = 'id name column_values { id text ... on BoardRelationValue { display_value linked_item_ids } ... on MirrorValue { display_value } }';
 let fields_deliveries = 'id name column_values { id text ... on BoardRelationValue { display_value linked_item_ids } }';
 
+let non_radiator_codes = [
+	{ id: "feet", codes: [60682, 36645, 33645, 60680, 117613], name: 'Feet' },
+	{ id: "bracket", codes: [60378, 50802, 50813, 100850, 65846, 93772], name: 'Bracket' },
+	{ id: "half_tube", codes: [11354], name: '½ Tube' },
+	{ id: "full_tube", codes: [125237], name: 'Tube' }
+];
+
 // ==================================================
 // ==================== CLASSES =====================
 // ==================================================
@@ -232,7 +239,34 @@ class Radiator {
 		this.status = status;
 		this.icon = icon;
 		this.style = style;
+		
+		this.radiatorType = radiatorType(this.name);
+		this.radiatorTypeLabel = ((this.radiatorType != 'radiator') ? ' <span class="uk-label uk-margin-small-left">' + non_radiator_codes.find(x => x['id'] === this.radiatorType).name + '</span>' : '');
+		
+		this.quantity = 1;
+		
+		if (this.name.split(' x ').length > 1) {
+			this.quantity = parseInt(this.name.split(' x ')[0]);
+		}
 	}
+}
+
+function radiatorType(code) {
+	var type = 'radiator';
+	
+	for (var i = 0; i < non_radiator_codes.length; i++) {
+		let nonRadiatorType = non_radiator_codes[i];
+		
+		if (String(code).split(' x ').length > 1) {
+			code = parseInt(String(code).split(' x ')[1]);
+		}
+		
+		if (nonRadiatorType.codes.includes(parseInt(code))) {
+			type = nonRadiatorType.id;
+		}
+	}
+	
+	return type;
 }
 
 class Radiators {

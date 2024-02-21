@@ -38,6 +38,14 @@ function getPurchaseOrderRadiators() {
 	
 	let query = ' { boards(ids:[' + id_radiatorBoard + ']) { groups(ids:["' + purchaseOrderId + '"]) { items_page(limit:500) { items { ' + fields_radiators + ' } } } } } ';
 	
+	var nonRadiatorCount = {
+		radiator: 0,
+		feet: 0,
+		bracket: 0,
+		half_tube: 0,
+		full_tube: 0
+	};
+	
 	mondayAPI(query, function(data) {
 		let palletsOfRadiators = new PalletsOfRadiators(data);
 		
@@ -55,11 +63,13 @@ function getPurchaseOrderRadiators() {
 			for (var j = 0; j < palletOfRadiators.radiators.length; j++) {
 				let radiator = palletOfRadiators.radiators[j];
 				
+				nonRadiatorCount[radiator.radiatorType] += radiator.quantity;
+				
 				let checked = (radiator.received ? ' checked' : '');
 				let disabled = (((radiator.outPallet == '') || (radiator.outPallet == undefined)) ? '' : ' disabled uk-tooltip="Radiator on pallet ' + radiator.outPallet  + '"');
 				
-				html += '<li class="uk-flex uk-flex-middle"> <label class="uk-flex-1">';
-				html += '<input class="uk-checkbox" type="checkbox" id="' + radiator.id + '" data-changed="false"' + checked + disabled + '> [' + radiator.colour + '] ' + radiator.name;
+				html += '<li class="uk-flex uk-flex-middle"> <label class="uk-flex-1 uk-flex uk-flex-middle">';
+				html += '<input class="uk-checkbox uk-margin-small-right" type="checkbox" id="' + radiator.id + '" data-changed="false"' + checked + disabled + '>[' + radiator.colour + '] ' + radiator.name + radiator.radiatorTypeLabel;
 				html += '</label> <span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span> </li>';
 				
 				let existingColour = colourCount.find(x => x.colour === radiator.colour);
@@ -68,9 +78,9 @@ function getPurchaseOrderRadiators() {
 				let existingColourExists = !(existingColour == undefined);
 				
 				if (existingColourExists) {
-					existingColour.count += 1;
+					existingColour.count += radiator.quantity;
 				} else {
-					colourCount.push( { colour: radiator.colour, count: 1 } );
+					colourCount.push( { colour: radiator.colour, count: radiator.quantity } );
 				}
 			}
 			
@@ -84,7 +94,20 @@ function getPurchaseOrderRadiators() {
 		
 		var colourHtml = '';
 		colourHtml += ' <div> <ul class="uk-card-secondary uk-padding" uk-accordion> <li> ';
-		colourHtml += ' <a class="uk-accordion-title" href>Colour Count</a> <div class="uk-accordion-content"> ';
+		colourHtml += ' <a class="uk-accordion-title" href>';
+		
+		var nonRadiatorCountHtml = [];
+		
+		for (const [key, value] of Object.entries(nonRadiatorCount)) {
+			if (value > 0) {
+				nonRadiatorCountHtml.push(value + ' x ' + camelCase(key.replace('_', ' ')) + (((value == 1) || (key == 'feet')) ? '' : 's'));
+			}
+		}
+		
+		colourHtml += nonRadiatorCountHtml.join(', ');
+		colourHtml += ' (' + palletsOfRadiators.all.length + ' pallet' + ((palletsOfRadiators.all.length == 1) ? '' : 's') + ')';
+		
+		colourHtml += '</a> <div class="uk-accordion-content"> ';
 		colourHtml += ' <ul class="uk-list uk-list-divider uk-width-1-1" id="radiator-list"> ';
 		
 		var total = 0;
@@ -95,10 +118,6 @@ function getPurchaseOrderRadiators() {
 			total += parseInt(colour.count);
 		}
 		
-		colourHtml += '<li class="uk-text-bold">';
-		colourHtml += 'Total: ' + total + ' radiator' + ((total == 1) ? '' : 's');
-		colourHtml += ' (' + palletsOfRadiators.all.length + ' pallet' + ((palletsOfRadiators.all.length == 1) ? '' : 's') + ')';
-		colourHtml += '</li>';
 		colourHtml += ' </ul> ';
 		colourHtml += ' </div> </li> </ul> </div> ';
 		

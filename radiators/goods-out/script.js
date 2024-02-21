@@ -82,7 +82,7 @@ function getRadiators() {
 			}
 			
 			html += '<li class="uk-flex uk-flex-middle" data-colour="' + alphanumeric(radiator.colour) + '" data-purchase-order="' + alphanumeric(radiator.purchaseOrderName) + '"> <label class="uk-flex-1">';
-			html += '<input class="uk-checkbox" type="checkbox" id="' + radiator.id + '" data-name="[' + radiator.colour + '] ' + radiator.name +  ' (' + radiator.purchaseOrderName + ')" data-changed="false"' + checkboxStatus + '> ';
+			html += '<input class="uk-checkbox" type="checkbox" id="' + radiator.id + '" data-name="[' + radiator.colour + '] ' + radiator.name +  ' (' + radiator.purchaseOrderName + ')" data-changed="false"' + checkboxStatus + ' data-quantity="' + radiator.quantity + '"> ';
 			html += '[' + radiator.colour + '] ' + radiator.name + onPallet +' <span class="uk-text-nowrap uk-text-muted">' + radiator.purchaseOrderName + '</span>';
 			html += '</label> <span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span> </li>';
 			
@@ -135,17 +135,17 @@ function getRadiators() {
 function getSelectedRadiators() {
 	
 	var html = '';
+	var radiatorCount = 0;
 	
 	let checkboxes = gbc('#page ul input[type=checkbox]:checked:not(:disabled)');
 	
 	checkboxes.each(function(radiator) {
 		html += '<li>' + radiator.dataset.name + '</li>';
+		radiatorCount += parseInt(radiator.dataset.quantity);
 	});
 	
-	var radiatorCount = checkboxes.count();
-	
 	gbc('#radiator-list').html(html);
-	gbc('#radiator-count').html(radiatorCount);
+	gbc('#item-count').html(radiatorCount);
 }
 
 function filterHtml(array, friendlyName, name) {
