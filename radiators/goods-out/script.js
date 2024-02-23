@@ -83,7 +83,7 @@ function getRadiators() {
 			
 			html += '<li class="uk-flex uk-flex-middle" data-colour="' + alphanumeric(radiator.colour) + '" data-purchase-order="' + alphanumeric(radiator.purchaseOrderName) + '"> <label class="uk-flex-1">';
 			html += '<input class="uk-checkbox" type="checkbox" id="' + radiator.id + '" data-name="[' + radiator.colour + '] ' + radiator.name +  ' (' + radiator.purchaseOrderName + ')" data-changed="false"' + checkboxStatus + ' data-quantity="' + radiator.quantity + '"> ';
-			html += '[' + radiator.colour + '] ' + radiator.name + onPallet +' <span class="uk-text-nowrap uk-text-muted">' + radiator.purchaseOrderName + '</span>';
+			html += '[' + radiator.colour + '] ' + radiator.name + onPallet +' <span class="uk-text-nowrap uk-text-muted">' + radiator.friendlyPurchaseOrderName + '</span>';
 			html += '</label> <span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span> </li>';
 			
 			colours.push(radiator.colour);
@@ -247,5 +247,5 @@ function addPallets() {
 
 function printPage() {
 	let outPalletId = gbc('#goods-out-pallet').val();
-	window.open('/print#' + outPalletId);
+	window.open('./print#' + outPalletId);
 }
