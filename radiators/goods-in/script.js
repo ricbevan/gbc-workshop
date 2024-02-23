@@ -38,18 +38,9 @@ function getPurchaseOrderRadiators() {
 	
 	let query = ' { boards(ids:[' + id_radiatorBoard + ']) { groups(ids:["' + purchaseOrderId + '"]) { items_page(limit:500) { items { ' + fields_radiators + ' } } } } } ';
 	
-	var nonRadiatorCount = {
-		radiator: 0,
-		feet: 0,
-		bracket: 0,
-		half_tube: 0,
-		full_tube: 0
-	};
-	
 	mondayAPI(query, function(data) {
 		let palletsOfRadiators = new PalletsOfRadiators(data);
-		
-		var colourCount = [];
+		let colourCount = new ColourTypeQuantities(palletsOfRadiators);
 		
 		var html = '';
 		
@@ -63,25 +54,12 @@ function getPurchaseOrderRadiators() {
 			for (var j = 0; j < palletOfRadiators.radiators.length; j++) {
 				let radiator = palletOfRadiators.radiators[j];
 				
-				nonRadiatorCount[radiator.radiatorType] += radiator.quantity;
-				
 				let checked = (radiator.received ? ' checked' : '');
 				let disabled = (((radiator.outPallet == '') || (radiator.outPallet == undefined)) ? '' : ' disabled uk-tooltip="Radiator on pallet ' + radiator.outPallet  + '"');
 				
 				html += '<li class="uk-flex uk-flex-middle"> <label class="uk-flex-1 uk-flex uk-flex-middle">';
-				html += '<input class="uk-checkbox uk-margin-small-right" type="checkbox" id="' + radiator.id + '" data-changed="false"' + checked + disabled + '>[' + radiator.colour + '] ' + radiator.name + radiator.radiatorTypeLabel;
+				html += '<input class="uk-checkbox uk-margin-small-right" type="checkbox" id="' + radiator.id + '" data-changed="false"' + checked + disabled + '><span class="uk-margin-small-right">[' + radiator.colour + '] ' + radiator.name + '</span>' + radiator.radiatorTypeLabel;
 				html += '</label> <span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span> </li>';
-				
-				let existingColour = colourCount.find(x => x.colour === radiator.colour);
-				
-				// does the pallet number already have a radiator pallet?
-				let existingColourExists = !(existingColour == undefined);
-				
-				if (existingColourExists) {
-					existingColour.count += radiator.quantity;
-				} else {
-					colourCount.push( { colour: radiator.colour, count: radiator.quantity } );
-				}
 			}
 			
 			html += '</ul>';
@@ -90,34 +68,13 @@ function getPurchaseOrderRadiators() {
 		
 		html += '<div><button class="uk-button uk-button-primary uk-width-1-1" id="goods-in-save">Save</button></div>';
 		
-		colourCount.sort((a, b) => (a.colour > b.colour) ? 1 : -1);
-		
 		var colourHtml = '';
 		colourHtml += ' <div> <ul class="uk-card-secondary uk-padding" uk-accordion> <li> ';
 		colourHtml += ' <a class="uk-accordion-title" href>';
-		
-		var nonRadiatorCountHtml = [];
-		
-		for (const [key, value] of Object.entries(nonRadiatorCount)) {
-			if (value > 0) {
-				nonRadiatorCountHtml.push(value + ' x ' + camelCase(key.replace('_', ' ')) + (((value == 1) || (key == 'feet')) ? '' : 's'));
-			}
-		}
-		
-		colourHtml += nonRadiatorCountHtml.join(', ');
-		colourHtml += ' (' + palletsOfRadiators.all.length + ' pallet' + ((palletsOfRadiators.all.length == 1) ? '' : 's') + ')';
-		
-		colourHtml += '</a> <div class="uk-accordion-content"> ';
+		colourHtml += colourCount.totalHtml;
+		colourHtml += ' </a> <div class="uk-accordion-content"> ';
 		colourHtml += ' <ul class="uk-list uk-list-divider uk-width-1-1" id="radiator-list"> ';
-		
-		var total = 0;
-		
-		for (var i = 0; i < colourCount.length; i++) {
-			let colour = colourCount[i];
-			colourHtml += '<li>' + colour.count + ' x ' + colour.colour + '</li>';
-			total += parseInt(colour.count);
-		}
-		
+		colourHtml += colourCount.allHtml;
 		colourHtml += ' </ul> ';
 		colourHtml += ' </div> </li> </ul> </div> ';
 		
@@ -140,6 +97,86 @@ function getPurchaseOrderRadiators() {
 			e.target.dataset.changed = "true";
 		});
 	});
+}
+
+class ColourTypeQuantities {
+	#colourTypeQuantities = [];
+	#totalQuantities = new ColourTypeQuantity('Total');
+	
+	constructor(palletsOfRadiators) {
+		for (var i = 0; i < palletsOfRadiators.all.length; i++) {
+			let palletOfRadiators = palletsOfRadiators.all[i];
+			
+			for (var j = 0; j < palletOfRadiators.radiators.length; j++) {
+				let radiator = palletOfRadiators.radiators[j];
+				
+				let existingColour = this.#colourTypeQuantities.find(x => x.colour === radiator.colour);
+				let existingColourExists = !(existingColour == undefined);
+				
+				this.#totalQuantities[radiator.radiatorType] += radiator.quantity;
+				
+				if (existingColourExists) {
+					existingColour[radiator.radiatorType] += radiator.quantity;
+				} else {
+					let newQuantity = new ColourTypeQuantity(radiator.colour);
+					newQuantity[radiator.radiatorType] += radiator.quantity;
+					this.#colourTypeQuantities.push(newQuantity);
+				}
+			}
+		}
+	}
+	
+	get allHtml() {
+		var html = '';
+		
+		for (var i = 0; i < this.#colourTypeQuantities.length; i++) {
+			let quantity = this.#colourTypeQuantities[i];
+			
+			html += '<li>';
+			html += this.#quantityHtml(quantity);
+			html += '</li>';
+		}
+		
+		return html;
+	}
+	
+	get totalHtml() {
+		var html = '';
+		html += this.#quantityHtml(this.#totalQuantities);
+		return html;
+	}
+	
+	#quantityHtml(quantity) {
+		var html = '';
+		html += quantity.colour;
+		
+		var nonRadiatorCountHtml2 = [];
+		
+		for (const [key, value] of Object.entries(quantity)) {
+			if (key != 'colour') {
+				if (value > 0) {
+					nonRadiatorCountHtml2.push(value + ' x ' + camelCase(key.replace('_', ' ')) + (((value == 1) || (key == 'feet')) ? '' : 's'));
+				}
+			}
+		}
+		
+		if (nonRadiatorCountHtml2.length > 0) {
+			html += ' (' + nonRadiatorCountHtml2.join(', ') + ')';
+		}
+		
+		return html;
+	}
+}
+
+class ColourTypeQuantity {
+	constructor(colour) {
+		this.colour = colour;
+		this.radiator = 0;
+		this.feet = 0;
+		this.bracket = 0;
+		this.half_tube = 0;
+		this.full_tube = 0;
+	}
 }
 
 function selectAllOnPallet(pallet) {

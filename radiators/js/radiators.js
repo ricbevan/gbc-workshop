@@ -241,7 +241,7 @@ class Radiator {
 		this.style = style;
 		
 		this.radiatorType = radiatorType(this.name);
-		this.radiatorTypeLabel = ((this.radiatorType != 'radiator') ? ' <span class="uk-label uk-margin-small-left">' + non_radiator_codes.find(x => x['id'] === this.radiatorType).name + '</span>' : '');
+		this.radiatorTypeLabel = ((this.radiatorType != 'radiator') ? ' <span class="uk-label">' + non_radiator_codes.find(x => x['id'] === this.radiatorType).name + '</span>' : '');
 		
 		this.quantity = 1;
 		

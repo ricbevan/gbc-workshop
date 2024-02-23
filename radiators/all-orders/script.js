@@ -51,15 +51,22 @@ function getPurchaseOrderRadiators() {
 		for (var i = 0; i < radiators.all.length; i++) {
 			let radiator = radiators.all[i];
 			
+			console.log(radiator);
+			
 			let received = '<span uk-icon="icon: arrow-right"></span> In on pallet ' + radiator.inPallet + ((radiator.received) ? ' (received)' : '');
 			let delivered = '<span uk-icon="icon: arrow-left"></span> ' + ((radiator.outPallet == undefined) ? 'Not sent' : ('Out on pallet ' + radiator.outPallet)) + ((radiator.deliveryTime != '') ? (' (sent on ' + fixDate(radiator.deliveryDate) + ')') : '');
 			
 			html += '<li data-colour="' + alphanumeric(radiator.colour) + '" data-pallet="' + alphanumeric(radiator.inPallet) + '">';
 			html += '<div class="uk-flex uk-flex-middle" uk-grid>';
-			html += '<div class="uk-width-expand">';
+			html += '<div class="uk-width-expand" uk-grid>';
+			html += '<div class="uk-width-auto">';
 			html += '<p class="uk-margin-remove">[' + radiator.colour + '] ' + radiator.name + '</p>';
 			html += '<p class="uk-text-light uk-text-small uk-margin-remove">' + received + '</p>';
 			html += '<p class="uk-text-light uk-text-small uk-margin-remove">' + delivered + '</p>';
+			html += '</div>';
+			html += '<div class="uk-flex uk-flex-middle uk-margin-remove">';
+			html += radiator.radiatorTypeLabel;
+			html += '</div>';
 			html += '</div>';
 			html += '<div class="uk-width-auto">';
 			html += '<span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span>';
