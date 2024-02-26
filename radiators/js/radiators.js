@@ -283,7 +283,7 @@ class Radiators {
 	}
 	
 	get all() {
-		this.#radiators.sort((a, b) => ((a.colour + a.name) > (b.colour + b.name)) ? 1 : -1);
+		this.#radiators.sort((a, b) => ((a.purchaseOrderName + a.colour + a.name) > (b.purchaseOrderName + b.colour + b.name)) ? 1 : -1);
 		return this.#radiators;
 	}
 }
