@@ -304,10 +304,17 @@ class Updates {
 	constructor(data) {
 		let updates = data['data']['boards'][0]['updates'];
 		
+		// hide comments from system development
+		let updatesAfter = Date.parse('27 Feb 2024 00:00:00 GMT');
+		
 		for (var i = 0; i < updates.length; i++) {
 			let update = updates[i];
-			let newUpdate = new Update(update);
-			this.#updates.push(newUpdate);
+			let created = new Date(update.created_at);
+			
+			if (created > updatesAfter) {
+				let newUpdate = new Update(update);
+				this.#updates.push(newUpdate);
+			}
 		}
 	}
 	
