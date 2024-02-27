@@ -28,6 +28,14 @@ let fields_radiators = 'id name updates(limit: 50) { body } group { title } colu
 let fields_pallets = 'id name column_values { id text ... on BoardRelationValue { display_value linked_item_ids } ... on MirrorValue { display_value } }';
 let fields_deliveries = 'id name column_values { id text ... on BoardRelationValue { display_value linked_item_ids } }';
 
+let workshop = true;
+
+document.addEventListener("DOMContentLoaded", function() {
+	if (!workshop) {
+		gbc('#workshop-navigation, .workshop-link').delete();
+	}
+});
+
 let non_radiator_codes = [
 	{ id: "feet", codes: [60682, 36645, 33645, 60680, 117613], name: 'Feet' },
 	{ id: "bracket", codes: [60378, 50802, 50813, 100850, 65846, 93772], name: 'Bracket' },
@@ -422,7 +430,9 @@ function getRadiatorComments(radiatorId, func) {
 		html += '<div> <div class="uk-grid-small" uk-grid>';
 		html += '<div class="uk-width-expand"> <button class="uk-button uk-button-primary uk-width-1-1" id="add-comment">Add Comment</button> </div>';
 		
-		html += '<div class="uk-width-auto"> <button class="uk-button uk-button-' + ((radiator.rejected) ? 'success' : 'danger') + '" id="toggle-reject-radiator">' + ((radiator.rejected) ? 'Accept' : 'Reject') + '</button> </div>';
+		if (workshop) {
+			html += '<div class="uk-width-auto"> <button class="uk-button uk-button-' + ((radiator.rejected) ? 'success' : 'danger') + '" id="toggle-reject-radiator">' + ((radiator.rejected) ? 'Accept' : 'Reject') + '</button> </div>';
+		}
 		
 		html += '</div> </div>';
 		html += '</div>';
@@ -464,7 +474,7 @@ function addRadiatorComment(radiatorId, func) {
 function rejectRadiator(radiatorId, func) {
 	UIkit.modal.prompt('Reason radiator is rejected:').then(function(update) {
 		if (update != null) {
-			let query = 'mutation { create_update (item_id: ' + radiatorId + ', body: "<p>Rejected because ' + update + '</p>") { id } }';
+			let query = 'mutation { create_update (item_id: ' + radiatorId + ', body: "<p>' + userName + ' rejected because ' + update + '</p>") { id } }';
 			
 			mondayAPI(query, function(data) {
 				let radiatorColumnJson = JSON.stringify(' { "' + id_radiatorBoardRejected + '" : { "checked" : "true" } } ');
@@ -486,7 +496,7 @@ function rejectRadiator(radiatorId, func) {
 
 function acceptRadiator(radiatorId, func) {
 	UIkit.modal.confirm('Are you sure you want to remove the rejection from this radiator?').then(function() {
-		let query = 'mutation { create_update (item_id: ' + radiatorId + ', body: "<p>Approved</p>") { id } }';
+		let query = 'mutation { create_update (item_id: ' + radiatorId + ', body: "<p>' + userName + ' approved</p>") { id } }';
 		
 		mondayAPI(query, function(data) {
 			let radiatorColumnJson = JSON.stringify(' { "' + id_radiatorBoardRejected + '" : null } ');

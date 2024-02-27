@@ -43,6 +43,13 @@
 			return this;
 		};
 		
+		Constructor.prototype.delete = function (attr) {
+			this.each(function (item) {
+				item.remove();
+			});
+			return this;
+		};
+		
 		Constructor.prototype.disable = function () {
 			this.each(function (item) {
 				item.setAttribute('disabled', true);
