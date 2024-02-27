@@ -211,7 +211,6 @@ function addPallets() {
 	
 	mondayAPI(query, function(data) {
 		
-		console.log(data);
 		let mostRecentPallet = data['data']['boards'][0]['items_page']['items'][0]['name'];
 		
 		if (isNaN(mostRecentPallet)) {

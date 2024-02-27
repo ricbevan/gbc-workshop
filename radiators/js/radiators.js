@@ -380,10 +380,8 @@ function getRadiatorComments(radiatorId, func) {
 		
 		let radiator = radiators.all[0];
 		
-		console.log(radiator);
-		
-		let received = 'In on pallet ' + radiator.inPallet + ((radiator.received) ? ' (received)' : '');
-		let delivered = ((radiator.outPallet == undefined) ? 'Not sent' : ('Out on pallet ' + radiator.outPallet)) + ((radiator.deliveryTime != '') ? (' (sent on ' + fixDate(radiator.deliveryDate) + ')') : '');
+		let received = 'Pallet ' + radiator.inPallet + ((radiator.received) ? ' (received)' : '');
+		let delivered = ((radiator.outPallet == '') ? 'Not sent' : ('Pallet ' + radiator.outPallet)) + ((radiator.deliveryTime != '') ? (' (sent ' + fixDate(radiator.deliveryDate) + ')') : '');
 		
 		var html = '';
 		

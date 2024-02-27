@@ -38,8 +38,6 @@ function getPurchaseOrderRadiators() {
 	
 	let query = ' { boards(ids: [' + id_radiatorBoard + ']) { items_page( limit: 500, query_params: { rules: [{column_id: "group", compare_value: ["' + purchaseOrderId + '"], operator:any_of}] }) { items { ' + fields_radiators + ' } } } } ';
 	
-	console.log(query);
-	
 	mondayAPI(query, function(data) {
 		let radiators = new Radiators(data);
 		
@@ -53,10 +51,8 @@ function getPurchaseOrderRadiators() {
 		for (var i = 0; i < radiators.all.length; i++) {
 			let radiator = radiators.all[i];
 			
-			console.log(radiator);
-			
-			let received = '<span uk-icon="icon: arrow-right"></span> In on pallet ' + radiator.inPallet + ((radiator.received) ? ' (received)' : '');
-			let delivered = '<span uk-icon="icon: arrow-left"></span> ' + ((radiator.outPallet == undefined) ? 'Not sent' : ('Out on pallet ' + radiator.outPallet)) + ((radiator.deliveryTime != '') ? (' (sent on ' + fixDate(radiator.deliveryDate) + ')') : '');
+			let received = '<span uk-icon="icon: arrow-right"></span> Pallet ' + radiator.inPallet + ((radiator.received) ? ' (received)' : '');
+			let delivered = '<span uk-icon="icon: arrow-left"></span> ' + ((radiator.outPallet == '') ? 'Not sent' : ('Pallet ' + radiator.outPallet)) + ((radiator.deliveryTime != '') ? (' (sent ' + fixDate(radiator.deliveryDate) + ')') : '');
 			
 			html += '<li data-colour="' + alphanumeric(radiator.colour) + '" data-pallet="' + alphanumeric(radiator.inPallet) + '">';
 			html += '<div class="uk-flex uk-flex-middle" uk-grid>';

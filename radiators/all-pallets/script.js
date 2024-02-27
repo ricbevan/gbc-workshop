@@ -57,8 +57,8 @@ function getPalletRadiators() {
 		for (var i = 0; i < radiators.all.length; i++) {
 			let radiator = radiators.all[i];
 			
-			let received = '<span uk-icon="icon: arrow-right"></span> In on pallet ' + radiator.inPallet + ((radiator.received) ? ' (received)' : '');
-			let delivered = '<span uk-icon="icon: arrow-left"></span> ' + ((radiator.outPallet == undefined) ? 'Not sent' : ('Out on pallet ' + radiator.outPallet)) + ((radiator.deliveryTime != '') ? (' (sent on ' + fixDate(radiator.deliveryDate) + ')') : '');
+			let received = '<span uk-icon="icon: arrow-right"></span> Pallet ' + radiator.inPallet + ((radiator.received) ? ' (received)' : '');
+			let delivered = '<span uk-icon="icon: arrow-left"></span> ' + ((radiator.outPallet == '') ? 'Not sent' : ('Pallet ' + radiator.outPallet)) + ((radiator.deliveryTime != '') ? (' (sent ' + fixDate(radiator.deliveryDate) + ')') : '');
 			
 			html += '<li data-colour="' + alphanumeric(radiator.colour) + '" data-pallet="' + alphanumeric(radiator.inPallet) + '">';
 			html += '<div class="uk-flex uk-flex-middle" uk-grid>';

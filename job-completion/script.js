@@ -31,7 +31,6 @@ function loadJob() {
 	jobId = '';
 	
 	mondayAPI(query, function(data) {
-		console.log(data);
 		
 		let jobs = data['data']['items_page_by_column_values']['items'];
 		
