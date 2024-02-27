@@ -37,6 +37,10 @@ input[type="number"]::-webkit-outer-spin-button {
   color: #000 !important;
 }
 
+#page .uk-checkbox { /* vertically align checkboxes in list rows */
+  margin-top: 0px;
+}
+
 @media only screen and (max-width: 600px) {
   .uk-sticky-fixed { /* sticky subnav on goods out */
     margin-left: -30px !important;

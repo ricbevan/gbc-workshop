@@ -36,7 +36,9 @@ function getPurchaseOrders() {
 function getPurchaseOrderRadiators() {
 	let purchaseOrderId = gbc('#goods-in-date').val();
 	
-	let query = ' { boards(ids: [' + id_radiatorBoard + ']) { items_page( query_params: { rules: [{column_id: "group", compare_value: ["' + purchaseOrderId + '"], operator:any_of}] }) { items { ' + fields_radiators + ' } } } } ';
+	let query = ' { boards(ids: [' + id_radiatorBoard + ']) { items_page( limit: 500, query_params: { rules: [{column_id: "group", compare_value: ["' + purchaseOrderId + '"], operator:any_of}] }) { items { ' + fields_radiators + ' } } } } ';
+	
+	console.log(query);
 	
 	mondayAPI(query, function(data) {
 		let radiators = new Radiators(data);
