@@ -78,11 +78,13 @@ function getDelivery() {
 			html += '</ul></dd>';
 			html += '</dl> </div>';
 			
-			if (delivery.radiators != '') {
-				html += ' <div class="uk-margin-remove"> <ul uk-accordion> <li> ';
-				html += ' <a class="uk-accordion-title uk-text-uppercase uk-text-small" href>Radiators</a> <p class="uk-accordion-content"> ';
-				html += decodeURIComponent(delivery.radiators);
-				html += ' </p> </li> </ul> </div> ';
+			if (workshop) {
+				if (delivery.radiators != '') {
+					html += ' <div class="uk-margin-remove"> <ul uk-accordion> <li> ';
+					html += ' <a class="uk-accordion-title uk-text-uppercase uk-text-small" href>Radiators</a> <p class="uk-accordion-content"> ';
+					html += decodeURIComponent(delivery.radiators);
+					html += ' </p> </li> </ul> </div> ';
+				}
 			}
 			
 			html += '<div class="uk-flex uk-flex-center uk-margin-top">';
@@ -100,15 +102,9 @@ function getDelivery() {
 			
 			gbc('#page').show().html(html);
 			
-			initialiseSignature();
-			
 			if (delivery.status == 'Delivered') {
 				document.getElementById('signature').setAttribute('src', decodeURIComponent(delivery.signature));
 			}
-			
-			gbc('#clear-signature').on('click', function(e) {
-				initialiseSignature();
-			});
 		});
 	}
 }
