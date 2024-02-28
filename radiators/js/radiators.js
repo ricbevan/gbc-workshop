@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 let non_radiator_codes = [
-	{ id: "feet", codes: [60682, 36645, 33645, 60680, 117613], name: 'Feet' },
+	{ id: "feet", codes: [60682, 36645, 33645, 60680, 117613, 118538], name: 'Feet' },
 	{ id: "bracket", codes: [60378, 50802, 50813, 100850, 65846, 93772], name: 'Bracket' },
 	{ id: "half_tube", codes: [11354], name: '½ Tube' },
 	{ id: "full_tube", codes: [125237], name: 'Tube' }
