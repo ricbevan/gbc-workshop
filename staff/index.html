@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Staff</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/css/uikit.min.css" />
+		<link rel="stylesheet" href="/css/style.css" />
+		<script src="/js/uikit.min.js"></script>
+		<script src="/js/uikit-icons.min.js"></script>
+		
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="/media/images/icons/apple-touch-icon-57x57.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/media/images/icons/apple-touch-icon-72x72.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="60x60" href="/media/images/icons/apple-touch-icon-60x60.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="76x76" href="/media/images/icons/apple-touch-icon-76x76.png" />
+		<link rel="icon" type="image/png" href="/media/images/icons/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/png" href="/media/images/icons/favicon-32x32.png" sizes="32x32" />
+		<link rel="icon" type="image/png" href="/media/images/icons/favicon-16x16.png" sizes="16x16" />
+		<link rel="manifest" href="/media/images/icons/manifest.json">
+	</head>
+	<body uk-height-viewport>
+		<div class="uk-section gbc-green">
+			<div class="uk-container">
+				<div class="uk-position-top-right uk-padding-small" uk-tooltip="title: Not logged in; pos: bottom" id="username"><span uk-icon="user" class="uk-icon-button"></span></div>
+				<h1 class="uk-text-large">Staff</h1>
+			</div>
+		</div>
+		<div class="uk-section uk-section-default">
+			<div class="uk-container">
+				<ul class="uk-breadcrumb">
+					<li id="workshop-navigation"><a href="/">Workshop</a></li>
+					<li><span>Staff</span></li>
+				</ul>
+				<div class="uk-child-width-1-3@m uk-grid-small uk-grid-match uk-link-reset" id="page" uk-grid>
+					<div class="workshop-link">
+						<a href="./annual-leave" class="uk-card uk-card-default uk-card-body uk-light uk-card-hover gbc-green">
+							<h3 class="uk-card-title">Annual Leave</h3>
+							<p>View your annual leave.</p>
+						</a>
+					</div>
+					<div class="workshop-link">
+						<a href="./absence" class="uk-card uk-card-default uk-card-body uk-light uk-card-hover gbc-green">
+							<h3 class="uk-card-title">Absence</h3>
+							<p>View your absences.</p>
+						</a>
+					</div>
+				</div>
+				<div class="uk-alert-danger" id="error" uk-alert hidden>
+					<p></p>
+				</div>
+			</div>
+			
+			<div class="uk-modal uk-flex uk-open uk-flex-center uk-overlay-primary uk-text-center uk-flex-middle" id="loading" hidden>
+				<div class="uk-child-width-1-1" uk-grid>
+					<div id="loading-spinner">
+						<span uk-spinner="ratio: 4.5"></span>
+					</div>
+					<div>
+						<p id="loading-message">Loading...</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="/js/gbc.js"></script>
+		<script src="/js/gbc-office.js"></script>
+		<script src="/js/monday.js"></script>
+		<script src="/js/time.js"></script>
+		<script>
+			getStarted();
+			
+			document.addEventListener("DOMContentLoaded", function() {
+				getComments();
+			});
+			
+			function getComments() {
+				let query = ' query { boards(ids:' + id_radiatorBoard + ') { updates (limit: 1) { body id created_at creator { name } item_id } } } ';
+				
+				mondayAPI(query, function(data) {
+					let updates = new Updates(data);
+					
+					var html = '';
+					
+					if (updates.all.length == 0) {
+						html += 'No comments.';
+					} else {
+						let update = updates.all[0];
+						
+						let lastCheckedDateTime = new Date(getLocalStorage('Last Visited Comments'));
+						let lastCommentDateTime = new Date(update.created);
+						
+						if (lastCommentDateTime > lastCheckedDateTime) {
+							html += 'Un-read comments (' + humanized_time_span(update.created) + ')';
+						} else {
+							html += 'No new comments';
+						}
+					}
+					
+					gbc('#last-comment').html(html);
+				});
+			}
+		</script>
+		<script defer data-domain="factory.gbc.uk" data-api="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/event" src="https://old-frog-340d.falling-shadow-dfed.workers.dev/gbc/script.js"></script>
+	</body>
+</html>
