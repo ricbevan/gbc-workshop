@@ -89,6 +89,35 @@ function camelCase(str) {
 	return str.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
 }
 
+function alphanumeric(str) {
+	if (str == null) {
+		return '';
+	}
+	
+	return str.replace(/\W/g, '');
+}
+
+function fixDate(date) {
+	if (date == undefined) {
+		return '';
+	}
+	
+	var dateTime = '';
+	var splitDateTime = date.split(' ');
+	
+	if (splitDateTime.length > 1) { // store the current AM or PM
+		dateTime = ' ' + splitDateTime[1];
+	}
+	
+	var splitDate = splitDateTime[0].split('-');
+	
+	if (splitDate.length == 3) {
+		return splitDate[2] + '-' + splitDate[1] + '-' + splitDate[0] + dateTime;
+	} else {
+		return date;
+	}
+}
+
 // ==================================================
 // =============== GET COLUMN VALUES ================
 // ==================================================
