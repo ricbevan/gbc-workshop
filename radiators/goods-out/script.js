@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getPallets() {
-	let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page (query_params: { rules: [ { column_id : "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator:is_empty } ] } ) { items { ' + fields_pallets + ' } } } } ';
+	let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page(limit:500, query_params: { rules: [ { column_id : "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator:is_empty } ] } ) { items { ' + fields_pallets + ' } } } } ';
 	
 	mondayAPI(query, function(data) {
 		let pallets = new Pallets(data);
