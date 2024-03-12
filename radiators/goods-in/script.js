@@ -155,7 +155,7 @@ class ColourTypeQuantities {
 		for (const [key, value] of Object.entries(quantity)) {
 			if (key != 'colour') {
 				if (value > 0) {
-					nonRadiatorCountHtml2.push(value + ' x ' + camelCase(key.replace('_', ' ')) + (((value == 1) || (key == 'feet')) ? '' : 's'));
+					nonRadiatorCountHtml2.push(value + ' x ' + camelCase(key.replaceAll('_', ' ')) + (((value == 1) || (key == 'feet')) ? '' : 's'));
 				}
 			}
 		}
@@ -176,6 +176,17 @@ class ColourTypeQuantity {
 		this.bracket = 0;
 		this.half_tube = 0;
 		this.full_tube = 0;
+		this.small_oval_middle = 0;
+		this.small_oval_end = 0;
+		this.ornate_middle = 0;
+		this.ornate_end = 0;
+		this.large_oval_middle = 0;
+		this.large_oval_end = 0;
+		this.half_right_bushes = 0;
+		this.half_left_bushes = 0;
+		this.quarter_right_bushes = 0;
+		this.quarter_left_bushes = 0;
+		this.wall_stays = 0;
 	}
 }
 

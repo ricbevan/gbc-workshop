@@ -37,10 +37,21 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 let non_radiator_codes = [
-	{ id: "feet", codes: [60682, 36645, 33645, 60680, 117613, 118538], name: 'Feet' },
-	{ id: "bracket", codes: [60378, 50802, 50813, 100850, 65846, 93772], name: 'Bracket' },
-	{ id: "half_tube", codes: [11354], name: '½ Tube' },
-	{ id: "full_tube", codes: [125237], name: 'Tube' }
+	{ id: "feet", codes: ['60682', '36645', '33645', '60680', '117613', '118538'], name: 'Feet', colour: 'default' },
+	{ id: "bracket", codes: ['60378', '50802', '50813', '100850', '65846', '93772'], name: 'Bracket', colour: 'default' },
+	{ id: "half_tube", codes: ['11354'], name: '½ Tube', colour: 'default' },
+	{ id: "full_tube", codes: ['125237'], name: 'Tube', colour: 'default' },
+	{ id: "small_oval_middle", codes: ['DRCIOMS500AB','DRCIOMS500AC','DRCIOMS500CB','DRCIOMS500MBK','DRCIOMS500DKP'], name: 'Small Oval Middle', colour: 'warning' },
+	{ id: "small_oval_end", codes: ['DRCIOES560AB','DRCIOES560AC','DRCIOES560CB','DRCIOES560MBK','DRCIOES560DKP'], name: 'Small Oval End', colour: 'warning' },
+	{ id: "ornate_middle", codes: ['DRCIORMS680AB','DRCIORMS680AC','DRCIORMS680CB','DRCIORMS680MBK','DRCIORMS680DKP'], name: 'Ornate Middle', colour: 'warning' },
+	{ id: "ornate_end", codes: ['DRCIORES750AB','DRCIORES750AC','DRCIORES750CB','DRCIORES750MBK','DRCIORES750DKP'], name: 'Ornate End', colour: 'warning' },
+	{ id: "large_oval_middle", codes: ['DRCIOMS690AB','DRCIOMS690AC','DRCIOMS690CB','DRCIOMS690MBK','DRCIOMS690DKP'], name: 'Large Oval Middle', colour: 'warning' },
+	{ id: "large_oval_end", codes: ['DRCIOES760AB','DRCIOES760AC','DRCIOES760CB','DRCIOES760MBK','DRCIOES760DKP'], name: 'Large Oval End', colour: 'warning' },
+	{ id: "half_right_bushes", codes: ['DRCIEDLBAB','DRCIEDLBAC','DRCIEDLBCB','DRCIEDLBMBK','DRCIEDLBDKP'], name: '½ Bushes (R)', colour: 'warning' },
+	{ id: "half_left_bushes", codes: ['DRCIEDRBAB','DRCIEDRBAC','DRCIEDRBCB','DRCIEDRBMBK','DRCIEDRBDKP'], name: '½ Bushes (L)', colour: 'warning' },
+	{ id: "quarter_right_bushes", codes: ['DRCIED14RBAB','DRCIED14RBAC','DRCIED14RBCB','DRCIED14RBMBK','DRCIED14RBDKP'], name: '¼ Bushes (R)', colour: 'warning' },
+	{ id: "quarter_left_bushes", codes: ['DRCIED14LBAB','DRCIED14LBAC','DRCIED14LBCB','DRCIED14LBMBK','DRCIED14LBDKP'], name: '¼ Bushes (L)', colour: 'warning' },
+	{ id: "wall_stays", codes: ['DRCIWSAB','DRCIWSAC','DRCIWSCB','DRCIWSMBK','DRCIWSDKP'], name: 'Wall Stays', colour: 'warning' }
 ];
 
 // ==================================================
@@ -121,7 +132,7 @@ class Pallets {
 	}
 	
 	get all() {
-		this.#pallets.sort((a, b) => (parseInt(a.name) > parseInt(b.name)) ? 1 : -1);
+		this.#pallets.sort((a, b) => (parseInt(a.name) < parseInt(b.name)) ? 1 : -1);
 		return this.#pallets;
 	}
 }
@@ -249,7 +260,7 @@ class Radiator {
 		this.style = style;
 		
 		this.radiatorType = radiatorType(this.name);
-		this.radiatorTypeLabel = ((this.radiatorType != 'radiator') ? ' <span class="uk-label">' + non_radiator_codes.find(x => x['id'] === this.radiatorType).name + '</span>' : '');
+		this.radiatorTypeLabel = ((this.radiatorType != 'radiator') ? ' <span class="uk-label uk-label-' + non_radiator_codes.find(x => x['id'] === this.radiatorType).colour + '">' + non_radiator_codes.find(x => x['id'] === this.radiatorType).name + '</span>' : '');
 		
 		this.quantity = 1;
 		
@@ -266,10 +277,12 @@ function radiatorType(code) {
 		let nonRadiatorType = non_radiator_codes[i];
 		
 		if (String(code).split(' x ').length > 1) {
-			code = parseInt(String(code).split(' x ')[1]);
+			code = String(code).split(' x ')[1];
 		}
 		
-		if (nonRadiatorType.codes.includes(parseInt(code))) {
+		if (nonRadiatorType.codes.includes(code)) {
+			type = nonRadiatorType.id;
+		} else if (nonRadiatorType.codes.includes(code)) {
 			type = nonRadiatorType.id;
 		}
 	}
