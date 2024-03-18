@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
 let non_radiator_codes = [
 	{ id: "feet", codes: ['60682', '36645', '33645', '60680', '117613', '118538'], name: 'Feet', colour: 'default' },
 	{ id: "bracket", codes: ['60378', '50802', '50813', '100850', '65846', '93772'], name: 'Bracket', colour: 'default' },
-	{ id: "half_tube", codes: ['11354'], name: '½ Tube', colour: 'default' },
+	{ id: "half_tube", codes: ['11354','13154'], name: '½ Tube', colour: 'default' },
 	{ id: "full_tube", codes: ['125237'], name: 'Tube', colour: 'default' },
 	{ id: "small_oval_middle", codes: ['DRCIOMS500AB','DRCIOMS500AC','DRCIOMS500CB','DRCIOMS500MBK','DRCIOMS500DKP'], name: 'Small Oval Middle', colour: 'warning' },
 	{ id: "small_oval_end", codes: ['DRCIOES560AB','DRCIOES560AC','DRCIOES560CB','DRCIOES560MBK','DRCIOES560DKP'], name: 'Small Oval End', colour: 'warning' },
