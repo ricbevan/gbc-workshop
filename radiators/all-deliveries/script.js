@@ -88,16 +88,7 @@ function getDelivery() {
 			}
 			
 			html += '<div class="uk-flex uk-flex-center uk-margin-top">';
-			
-			html += '<div hidden>';
-			html += '<canvas id="canvas" class="uk-padding-remove" id="signature-canvas">Canvas is not supported</canvas>';
-			html += '<div class="uk-margin-top">';
-			html += '<button class="uk-button uk-button-primary uk-margin-small-right" id="save-pod">Save</button>';
-			html += '<button class="uk-button uk-button-danger" id="clear-signature">Clear</button>';
-			html += '</div>';
-			html += '</div>';
-			html += '<img id="signature"' + ((delivery.status == 'Delivered') ? '' : ' hidden') + ' />';
-			
+			html += '<img id="signature" />';
 			html += '</div>';
 			
 			gbc('#page').show().html(html);
