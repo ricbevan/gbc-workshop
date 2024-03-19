@@ -64,6 +64,13 @@
 			return this;
 		};
 		
+		Constructor.prototype.focus = function () {
+			this.each(function (item) {
+				item.focus();
+			});
+			return this;
+		};
+		
 		Constructor.prototype.hide = function () {
 			this.each(function (item) {
 				item.setAttribute('hidden', 'hidden');
