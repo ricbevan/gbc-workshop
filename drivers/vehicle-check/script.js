@@ -2,6 +2,8 @@ let id_vehicleCheckBoard = '1409326975';
 let id_vehicleCheckBoardMileage = 'numbers';
 let id_vehicleCheckBoardDefect = 'text';
 let id_vehicleCheckBoardVehicle = 'connect_boards';
+let id_vehicleCheckBoardDate = 'date';
+let id_vehicleCheckBoardLoggedBy = 'people2';
 
 var vehicleCheckId = '';
 
@@ -43,7 +45,7 @@ function getVehicleChecks() {
 	
 	let checkDate = gbc('#check-date').val();
 	
-	let query = ' { items_page_by_column_values (limit: 25, board_id: 1409326975, columns: [{column_id: "date", column_values: ["' + checkDate + '"]}]) { items { id name column_values { id value text type column { title description } ... on BoardRelationValue { display_value linked_item_ids } } } } } ';
+	let query = ' { items_page_by_column_values (limit: 25, board_id: ' + id_vehicleCheckBoard + ', columns: [{column_id: "' + id_vehicleCheckBoardDate + '", column_values: ["' + checkDate + '"]}]) { items { id name column_values { id value text type column { title description } ... on BoardRelationValue { display_value linked_item_ids } } } } } ';
 	
 	mondayAPI(query, function(data) {
 		let vehicleChecks = new VehicleChecks(data);
@@ -140,8 +142,8 @@ function saveVehicleChecks() {
 	let defect = document.querySelectorAll('#vehicle-defect')[0].value;
 	
 	var updateJson = '"numbers":' + mileage + ', ';
-	updateJson += '"people2": {"personsAndTeams": [{"id": ' + userId + ', "kind": "person"}] }, ';
-	updateJson += '"text": \"' + defect + '\", ';
+	updateJson += '"' + id_vehicleCheckBoardLoggedBy + '": {"personsAndTeams": [{"id": ' + userId + ', "kind": "person"}] }, ';
+	updateJson += '"' + id_vehicleCheckBoardDefect + '": \"' + defect + '\", ';
 	
 	for (var i = 0; i < checkboxes.length; i++) {
 		if (checkboxes[i].checked) {
@@ -152,7 +154,7 @@ function saveVehicleChecks() {
 	}
 	
 	updateJson = JSON.stringify('{' + updateJson.slice(0, -2) + '}');
-	var query = 'mutation { change_multiple_column_values(item_id: ' + vehicleCheckId + ', board_id:1409326975, column_values: ' + updateJson + ') { id, name } }';
+	var query = 'mutation { change_multiple_column_values(item_id: ' + vehicleCheckId + ', board_id:' + id_vehicleCheckBoard + ', column_values: ' + updateJson + ') { id, name } }';
 	
 	mondayAPI(query, function(data) {
 		getVehicleChecks();
