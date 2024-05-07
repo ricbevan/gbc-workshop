@@ -1,5 +1,7 @@
 getStarted();
 
+var radiators;
+
 document.addEventListener("DOMContentLoaded", function() {
 	gbc('#goods-out-pallet').on('change', function(e) {
 		getRadiators();
@@ -54,82 +56,110 @@ function getPallets() {
 }
 
 function getRadiators() {
-	let outPalletId = gbc('#goods-out-pallet').val();
-	
-	let query = ' { boards (ids: [' + id_radiatorBoard + ']) { items_page (limit: 500, query_params: {rules: [{ column_id: "' + id_radiatorBoardOutReceived + '", compare_value: [null], operator:is_not_empty }, { column_id: "' + id_radiatorBoardOutPalletDispatchTime + '", compare_value: [null], operator:is_empty }], operator: and }) { items { ' + fields_radiators + ' } } } } ';
+	let query = ' { boards (ids: [' + id_radiatorBoard + ']) { items_page (limit: 500, query_params: {rules: [{ column_id: "' + id_radiatorBoardOutReceived + '", compare_value: [null], operator:is_not_empty }, { column_id: "' + id_radiatorBoardOutPalletDispatchTime + '", compare_value: [null], operator:is_empty }], operator: and }) { cursor items { ' + fields_radiators + ' } } } } ';
 	
 	mondayAPI(query, function(data) {
-		let radiators = new Radiators(data);
+		radiators = new Radiators(data);
 		
-		var colours = [];
-		var purchaseOrders = [];
+		let cursor = data['data']['boards'][0]['items_page']['cursor'];
 		
-		var html = '';
+		if (cursor) {
+			getNextRadiators(cursor);
+		} else {
+			generateRadiators();
+		}
+	});
+}
+
+function getNextRadiators(cursor) {
+	let query = ' { next_items_page (cursor: "' + cursor + '") { cursor items { ' + fields_radiators + ' } } } ';
+	
+	mondayAPI(query, function(data) {
+		radiators.addRadiatorsFromCursor(data);
 		
-		html += '<div> <ul class="uk-list uk-list-divider" id="radiators">';
+		let cursor = data['data']['next_items_page']['cursor'];
 		
-		for (var i = 0; i < radiators.all.length; i++) {
-			let radiator = radiators.all[i];
-			
-			var checkboxStatus = '';
-			var onPallet = '';
-			
-			if (outPalletId == radiator.outPalletId) {
-				checkboxStatus = ' checked';
-			} else if ((radiator.outPallet != '') && (radiator.outPallet != undefined)) {
-				checkboxStatus += ' checked disabled';
-				onPallet = ' (pallet ' + radiator.outPallet + ')';
-			}
-			
-			html += '<li class="uk-flex uk-flex-middle" data-colour="' + alphanumeric(radiator.colour) + '" data-purchase-order="' + alphanumeric(radiator.purchaseOrderName) + '"> <label class="uk-flex-1 uk-flex uk-flex-middle">';
-			html += '<input class="uk-checkbox uk-margin-small-right" type="checkbox" id="' + radiator.id + '" data-name="[' + radiator.colour + '] ' + radiator.name +  ' (' + radiator.friendlyPurchaseOrderName + ')" data-changed="false"' + checkboxStatus + ' data-quantity="' + radiator.quantity + '"> ';
-			html += '[' + radiator.colour + '] ' + radiator.name + onPallet +' <span class="uk-text-nowrap uk-text-muted uk-margin-small-right uk-margin-small-left">' + radiator.friendlyPurchaseOrderName + '</span>' + radiator.radiatorTypeLabel;
-			html += '</label> <span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span> </li>';
-			
-			colours.push(radiator.colour);
-			purchaseOrders.push(radiator.purchaseOrderName);
+		if (cursor) {
+			getNextRadiators(cursor);
+		} else {
+			generateRadiators();
+		}
+	});
+}
+
+function generateRadiators() {
+	let outPalletId = gbc('#goods-out-pallet').val();
+	
+	var colours = [];
+	var purchaseOrders = [];
+	
+	var html = '';
+	
+	html += '<div> <ul class="uk-list uk-list-divider" id="radiators">';
+	
+	console.log(radiators.all.length);
+	
+	for (var i = 0; i < radiators.all.length; i++) {
+		let radiator = radiators.all[i];
+		
+		var checkboxStatus = '';
+		var onPallet = '';
+		
+		if (outPalletId == radiator.outPalletId) {
+			checkboxStatus = ' checked';
+		} else if ((radiator.outPallet != '') && (radiator.outPallet != undefined)) {
+			checkboxStatus += ' checked disabled';
+			onPallet = ' (pallet ' + radiator.outPallet + ')';
 		}
 		
-		html += '</ul> </div>';
+		html += '<li class="uk-flex uk-flex-middle" data-colour="' + alphanumeric(radiator.colour) + '" data-purchase-order="' + alphanumeric(radiator.purchaseOrderName) + '"> <label class="uk-flex-1 uk-flex uk-flex-middle">';
+		html += '<input class="uk-checkbox uk-margin-small-right" type="checkbox" id="' + radiator.id + '" data-name="[' + radiator.colour + '] ' + radiator.name +  ' (' + radiator.friendlyPurchaseOrderName + ')" data-changed="false"' + checkboxStatus + ' data-quantity="' + radiator.quantity + '"> ';
+		html += '[' + radiator.colour + '] ' + radiator.name + onPallet +' <span class="uk-text-nowrap uk-text-muted uk-margin-small-right uk-margin-small-left">' + radiator.friendlyPurchaseOrderName + '</span>' + radiator.radiatorTypeLabel;
+		html += '</label> <span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span> </li>';
 		
-		html += '<div><button class="uk-button uk-button-primary uk-width-1-1" id="goods-out-save">Save</button></div>';
-		
-		gbc('#page').show().html(html);
-		
-		gbc('.radiator-info').on('click', function(e) {
-			let radiatorId = e.target.closest('span').id;
-			getRadiatorComments(radiatorId, getRadiators);
-		});
-		
-		gbc('#goods-out-save').on('click', function(e) {
-			saveRadiators(getRadiators);
-		});
-		
-		colours = [... new Set(colours)].sort(); // get unique colours, sorted
-		purchaseOrders = [... new Set(purchaseOrders)].sort(); // get unique dates, sorted
-		
-		html = ''; // clear html (as already set above)
-		
-		html += '<div>';
-		html += filterHtml(colours, 'Colour', 'colour');
-		html += '</div>';
-		html += '<div>';
-		html += filterHtml(purchaseOrders, 'Purchase Order', 'purchase-order');
-		html += '</div>';
-		
-		gbc('#filters').show().html(html);
-		
-		gbc('#filters select').on('change', function(e) {
-			filter();
-		});
-		
-		gbc('#page ul input[type="checkbox"]').on('click', function(e) {
-			e.target.dataset.changed = "true";
-			getSelectedRadiators();
-		});
-		
+		colours.push(radiator.colour);
+		purchaseOrders.push(radiator.purchaseOrderName);
+	}
+	
+	html += '</ul> </div>';
+	
+	html += '<div><button class="uk-button uk-button-primary uk-width-1-1" id="goods-out-save">Save</button></div>';
+	
+	gbc('#page').show().html(html);
+	
+	gbc('.radiator-info').on('click', function(e) {
+		let radiatorId = e.target.closest('span').id;
+		getRadiatorComments(radiatorId, getRadiators);
+	});
+	
+	gbc('#goods-out-save').on('click', function(e) {
+		saveRadiators(getRadiators);
+	});
+	
+	colours = [... new Set(colours)].sort(); // get unique colours, sorted
+	purchaseOrders = [... new Set(purchaseOrders)].sort(); // get unique dates, sorted
+	
+	html = ''; // clear html (as already set above)
+	
+	html += '<div>';
+	html += filterHtml(colours, 'Colour', 'colour');
+	html += '</div>';
+	html += '<div>';
+	html += filterHtml(purchaseOrders, 'Purchase Order', 'purchase-order');
+	html += '</div>';
+	
+	gbc('#filters').show().html(html);
+	
+	gbc('#filters select').on('change', function(e) {
+		filter();
+	});
+	
+	gbc('#page ul input[type="checkbox"]').on('click', function(e) {
+		e.target.dataset.changed = "true";
 		getSelectedRadiators();
 	});
+	
+	getSelectedRadiators();
 }
 
 function getSelectedRadiators() {

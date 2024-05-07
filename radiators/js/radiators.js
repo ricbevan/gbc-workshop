@@ -303,6 +303,16 @@ class Radiators {
 		}
 	}
 	
+	addRadiatorsFromCursor(data) {
+		let radiators = data['data']['next_items_page']['items'];
+		
+		for (var i = 0; i < radiators.length; i++) {
+			let radiator = radiators[i];
+			let newRadiator = new Radiator(radiator);
+			this.#radiators.push(newRadiator);
+		}
+	}
+	
 	get all() {
 		this.#radiators.sort((a, b) => ((a.purchaseOrderName + a.colour + a.name) > (b.purchaseOrderName + b.colour + b.name)) ? 1 : -1);
 		return this.#radiators;
