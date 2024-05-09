@@ -60,7 +60,8 @@ function addItemToOrder() {
 	
 	let comma = ((existingItems == '') ? '' : ', ');
 	
-	gbc('#order-items').val(existingItems + comma + quantity + 'kg ' + powder);
+	let boxPlural = ('box' + (quantity == 1 ? '' : 'es'));
+	gbc('#order-items').val(existingItems + comma + quantity + ' ' + boxPlural + ' of ' + powder);
 	
 	gbc('#item-quantity').val('').focus();
 	gbc('#item-powder').val('');
