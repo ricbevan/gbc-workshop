@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getOrders() {
-	let query = ' { boards(ids:' + id_ordersBoard + ') { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardOrderNumber + '", compare_value: [null], operator: is_not_empty } ] order_by: {column_id: "' + id_ordersBoardOrderNumber + '", direction: desc } } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '"] ) { id text ... on BoardRelationValue { display_value } } } } } }';
+	let query = ' { boards(ids:' + id_ordersBoard + ') { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardOrderNumber + '", compare_value: [null], operator: is_not_empty } ] order_by: {column_id: "' + id_ordersBoardOrderNumber + '", direction: desc } } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '", "' + id_ordersBoardCreated + '"] ) { id text ... on BoardRelationValue { display_value } } } } } }';
 	
 	mondayAPI(query, function(data) {
 		
@@ -23,11 +23,14 @@ function getOrders() {
 			let orderNumber = columnText(order, id_ordersBoardOrderNumber);
 			let received = (columnText(order, id_ordersBoardReceived) ? true : false);
 			let partiallyReceived = (columnText(order, id_ordersBoardPartial) ? true : false);
+			let created = columnText(order, id_ordersBoardCreated);
 			let orderSupplier = linkedColumnText(order, "link_to_item");
 			
 			let partiallyReceivedHtml = (received ? '<span class="uk-label uk-label-success uk-margin-small-left">Received</span>' : (partiallyReceived ? '<span class="uk-label uk-label-warning uk-margin-small-left">Partially received</span>' : ''));
 			
-			html += '<li class="gbc-box-link uk-flex uk-flex-middle" data-order-id="' + order.id + '" data-order-received="' + (received || partiallyReceived) + '" style="white-space: pre;">Order <span class="uk-text-emphasis">' + orderNumber + '</span>: ' + order.name + ' <span class="uk-text-muted">from ' + orderSupplier + '</span>' + partiallyReceivedHtml + '</li>';
+			let css = ((received || partiallyReceived) ? 'gbc-box-link ' : '');
+			
+			html += '<li class="' + css + 'uk-flex uk-flex-middle" data-order-id="' + order.id + '" data-order-received="' + (received || partiallyReceived) + '"><span>Order <span class="uk-text-emphasis">' + orderNumber + '</span>: ' + order.name + ' <span class="uk-text-muted">from ' + orderSupplier + ' [' + fixDateShort(created) + ']</span>' + partiallyReceivedHtml + '</span></li>';
 		}
 		
 		html += '</ul>';

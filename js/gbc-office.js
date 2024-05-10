@@ -97,6 +97,14 @@ function alphanumeric(str) {
 	return str.replace(/\W/g, '');
 }
 
+function fixDateShort(date) {
+	if (date == undefined) {
+		return '';
+	}
+	
+	return fixDate(date).split(' ')[0];
+}
+
 function fixDate(date) {
 	if (date == undefined) {
 		return '';

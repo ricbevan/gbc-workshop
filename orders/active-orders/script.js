@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getOrders() {
-	let query = ' { boards(ids:' + id_ordersBoard + ') { groups(ids:["topics"]) { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardReceived + '", compare_value: [null], operator: is_empty } ] } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '"] ) { id text ... on BoardRelationValue { display_value } } } } } } }';
+	let query = ' { boards(ids:' + id_ordersBoard + ') { groups(ids:["topics"]) { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardReceived + '", compare_value: [null], operator: is_empty } ] } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '", "' + id_ordersBoardCreated + '"] ) { id text ... on BoardRelationValue { display_value } } } } } } }';
 	
 	mondayAPI(query, function(data) {
 		
@@ -22,11 +22,12 @@ function getOrders() {
 			
 			let orderNumber = columnText(order, id_ordersBoardOrderNumber);
 			let partiallyReceived = columnText(order, id_ordersBoardPartial);
+			let created = columnText(order, id_ordersBoardCreated);
 			let orderSupplier = linkedColumnText(order, "link_to_item");
 			
 			let partiallyReceivedHtml = (partiallyReceived ? '<span class="uk-label uk-label-warning uk-margin-small-left">Partially received</span>' : '');
 			
-			html += '<li class="gbc-box-link uk-flex uk-flex-middle" data-order-id="' + order.id + '" style="white-space: pre;">Order <span class="uk-text-emphasis">' + orderNumber + '</span>: ' + order.name + ' <span class="uk-text-muted">from ' + orderSupplier + '</span>' + partiallyReceivedHtml + '</li>';
+			html += '<li class="gbc-box-link uk-flex uk-flex-middle" data-order-id="' + order.id + '"><span>Order <span class="uk-text-emphasis">' + orderNumber + '</span>: ' + order.name + ' <span class="uk-text-muted">from ' + orderSupplier + ' [' + fixDateShort(created) + ']</span>' + partiallyReceivedHtml + '</span></li>';
 		}
 		
 		html += '</ul>';
@@ -55,7 +56,7 @@ function manageOrder(e) {
 	
 	let orderId = e.target.closest('li').getAttribute('data-order-id');
 	
-	var html = '<button class="uk-modal-close-outside" type="button" uk-close></button><div class="uk-modal-body"><div class="uk-child-width-1-2" uk-grid>';
+	var html = '<button class="uk-modal-close-outside" type="button" uk-close></button><div class="uk-modal-body"><div class="uk-child-width-1-2 uk-grid-match" uk-grid>';
 	html += '<div><button class="uk-button uk-button-secondary uk-width-1-1" id="part-receive">Part Received</button></div>';
 	html += '<div><button class="uk-button uk-button-success uk-width-1-1" id="receive">Received</button></div>';
 	html += '</div></div>';
