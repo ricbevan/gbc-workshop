@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<title>Pallet Number</title>
+	</head>
+	<body>
+		<div id="username"></div>
+		<div id="pallet-id"></div>
+		<div id="test"></div>
+		<script src="/js/gbc.js"></script>
+		<script src="/js/gbc-office.js"></script>
+		<script src="/js/monday.js"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				if (window.location.hash) {
+					var hash = window.location.hash.substring(1);
+					
+					gbc('#pallet-id').text(hash);
+					gbc('#test').text(getLocalStorage('Test'));
+				}
+			});
+		</script>
+	</body>
+</html>
