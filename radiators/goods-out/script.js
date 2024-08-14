@@ -1,9 +1,10 @@
 getStarted();
 
-var radiators;
+var radiators, selectedRadiator;
 
 document.addEventListener("DOMContentLoaded", function() {
 	gbc('#goods-out-pallet').on('change', function(e) {
+		selectedRadiator = gbc('#goods-out-pallet').val();
 		getRadiators();
 	});
 	
@@ -15,10 +16,10 @@ document.addEventListener("DOMContentLoaded", function() {
 		let radiatorsNotSaved = (gbc('#page ul input[type=checkbox][data-changed="true"]').count() > 0);
 		
 		if (radiatorsNotSaved) {
-			let confirmText = 'Radiators on this pallet have changed, but not been saved. Save before printing?';
+			let confirmText = 'Radiators on this pallet have changed, but not been saved. Save and print?';
 			
 			if (confirm(confirmText) == true) {
-				saveRadiators(printPage);
+				saveRadiators(function() { getPallets(); printPage(); });
 			}
 		} else {
 			printPage();
@@ -29,20 +30,23 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getPallets() {
-	let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page(limit:500, query_params: { rules: [ { column_id : "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator:is_empty } ] } ) { items { ' + fields_pallets + ' } } } } ';
+	// let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page(limit:500, query_params: { rules: [ { column_id : "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator:is_empty } ] } ) { items { ' + fields_pallets + ' } } } } ';
+	
+	let query = ' { boards(ids: [' + id_palletBoard + ']) { items_page( limit: 500 query_params: {rules: [{column_id: "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator: is_empty}]} ) { items { id name column_values(ids:["link_to_radiators_2"]) { id text ... on BoardRelationValue { linked_item_ids } } } } } } ';
 	
 	mondayAPI(query, function(data) {
 		let pallets = new Pallets(data);
+		let palletsReversed = pallets.all.reverse();
 		
-		if (pallets.all.length == 0) {
+		if (palletsReversed.length == 0) {
 			displayError('No pallets (getPallets)');
 			return false;
 		}
 		
 		var html = '';
 		
-		for (var i = 0; i < pallets.all.length; i++) {
-			let pallet = pallets.all[i];
+		for (var i = 0; i < palletsReversed.length; i++) {
+			let pallet = palletsReversed[i];
 			
 			let radiatorCount = ((pallet.radiatorCount > 0) ? (' (' + pallet.radiatorText + ')') : '');
 			
@@ -51,12 +55,18 @@ function getPallets() {
 		
 		gbc('#goods-out-pallet').html(html);
 		
+		if (selectedRadiator != null) {
+			gbc('#goods-out-pallet').val(selectedRadiator);
+		}
+		
 		getRadiators();
 	});
 }
 
 function getRadiators() {
-	let query = ' { boards (ids: [' + id_radiatorBoard + ']) { items_page (limit: 500, query_params: {rules: [{ column_id: "' + id_radiatorBoardOutReceived + '", compare_value: [null], operator:is_not_empty }, { column_id: "' + id_radiatorBoardOutPalletDispatchTime + '", compare_value: [null], operator:is_empty }], operator: and }) { cursor items { ' + fields_radiators + ' } } } } ';
+	// let query = ' { boards (ids: [' + id_radiatorBoard + ']) { items_page (limit: 500, query_params: {rules: [{ column_id: "' + id_radiatorBoardOutReceived + '", compare_value: [null], operator:is_not_empty }, { column_id: "' + id_radiatorBoardOutPalletDispatchTime + '", compare_value: [null], operator:is_empty }], operator: and }) { cursor items { ' + fields_radiators + ' } } } } ';
+	
+	let query = ' { boards(ids: [5856106281]) { items_page( limit: 500 query_params: {rules: [{column_id: "checkbox", compare_value: [null], operator: is_not_empty}, {column_id: "mirror_1", compare_value: [null], operator: is_empty}], operator: and} ) { cursor items { id name group { title } column_values(ids:["text", "connect_boards", "check", "mirror_1", "checkbox"]) { id text ... on BoardRelationValue { display_value linked_item_ids } ... on MirrorValue { display_value } } } } } } ';
 	
 	mondayAPI(query, function(data) {
 		radiators = new Radiators(data);
@@ -72,7 +82,7 @@ function getRadiators() {
 }
 
 function getNextRadiators(cursor) {
-	let query = ' { next_items_page (cursor: "' + cursor + '") { cursor items { ' + fields_radiators + ' } } } ';
+	let query = ' { next_items_page (cursor: "' + cursor + '") { cursor items { id name group { title } column_values(ids:["text", "connect_boards", "check", "mirror_1", "checkbox"]) { id text ... on BoardRelationValue { display_value linked_item_ids } ... on MirrorValue { display_value } } } } } ';
 	
 	mondayAPI(query, function(data) {
 		radiators.addRadiatorsFromCursor(data);
@@ -112,13 +122,13 @@ function generateRadiators() {
 			onPallet = ' (pallet ' + radiator.outPallet + ')';
 		}
 		
-		html += '<li class="uk-flex uk-flex-middle" data-colour="' + alphanumeric(radiator.colour) + '" data-purchase-order="' + alphanumeric(radiator.purchaseOrderName) + '"> <label class="uk-flex-1 uk-flex uk-flex-middle">';
+		html += '<li class="uk-flex uk-flex-middle" data-colour="' + alphanumeric(radiator.colour) + '" data-purchase-order="' + alphanumeric(radiator.purchaseOrderNameDateOnly) + '"> <label class="uk-flex-1 uk-flex uk-flex-middle">';
 		html += '<input class="uk-checkbox uk-margin-small-right" type="checkbox" id="' + radiator.id + '" data-name="[' + radiator.colour + '] ' + radiator.name +  ' (' + radiator.friendlyPurchaseOrderName + ')" data-changed="false"' + checkboxStatus + ' data-quantity="' + radiator.quantity + '"> ';
 		html += '[' + radiator.colour + '] ' + radiator.name + onPallet +' <span class="uk-text-nowrap uk-text-muted uk-margin-small-right uk-margin-small-left">' + radiator.friendlyPurchaseOrderName + '</span>' + radiator.radiatorTypeLabel;
 		html += '</label> <span uk-icon="' + radiator.icon + '" uk-tooltip="' + radiator.status + '" id="' + radiator.id + '" class="radiator-info ' + radiator.style + '"></span> </li>';
 		
 		colours.push(radiator.colour);
-		purchaseOrders.push(radiator.purchaseOrderName);
+		purchaseOrders.push(radiator.purchaseOrderNameDateOnly);
 	}
 	
 	html += '</ul> </div>';
@@ -133,7 +143,7 @@ function generateRadiators() {
 	});
 	
 	gbc('#goods-out-save').on('click', function(e) {
-		saveRadiators(getRadiators);
+		saveRadiators(getPallets);
 	});
 	
 	colours = [... new Set(colours)].sort(); // get unique colours, sorted
@@ -203,8 +213,12 @@ function filter() {
 	
 	let filters = ((colour != 'all' ? '[data-colour="' + colour + '"]' : '') + (purchaoseOrder != 'all' ? '[data-purchase-order="' + purchaoseOrder + '"]' : ''));
 	
-	gbc('#page li').hide();
-	gbc('#page ' + filters).show();
+	if (filters == '') { // if no filters are applied, show everything
+		gbc('#page li').show();
+	} else {
+		gbc('#page li').hide();
+		gbc('#page ' + filters).show();
+	}
 }
 
 function saveRadiators(func) {
@@ -275,6 +289,12 @@ function addPallets() {
 }
 
 function printPage() {
-	let outPalletId = gbc('#goods-out-pallet').val();
-	window.open('./print#' + outPalletId);
+	let radiatorCount = gbc('#page ul input[type=checkbox]:checked:not(:disabled)').count();
+	
+	if (radiatorCount > 0) {
+		let outPalletId = gbc('#goods-out-pallet').val();
+		window.open('./print#' + outPalletId);
+	} else {
+		UIkit.notification('There are no radiators on this pallet to print.', 'warning');
+	}
 }

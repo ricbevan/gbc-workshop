@@ -224,6 +224,7 @@ class Radiator {
 		this.deliveryDate = linkedColumnText(radiator, id_radiatorBoardOutPalletDispatchDate);
 		this.deliveryTime = linkedColumnText(radiator, id_radiatorBoardOutPalletDispatchTime);
 		this.purchaseOrderName = purchaseOrderName(radiator);
+		this.purchaseOrderNameDateOnly = this.purchaseOrderName.replace(/ AM| PM/, '');
 		this.friendlyPurchaseOrderName = fixDate(this.purchaseOrderName);
 		this.rejected = !(columnText(radiator, id_radiatorBoardRejected) == "");
 		this.updates = radiator.updates;
@@ -251,8 +252,10 @@ class Radiator {
 			style = 'uk-text-primary';
 		}
 		
-		if (radiator.updates.length > 0) {
-			style += ' has-comment';
+		if (radiator.updates != null) {
+			if (radiator.updates.length > 0) {
+				style += ' has-comment';
+			}
 		}
 		
 		this.status = status;
