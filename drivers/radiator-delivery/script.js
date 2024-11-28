@@ -124,54 +124,126 @@ function saveDelivery() {
 		return false;
 	}
 	
-	getRadiators();
+	getDeliveryPallets();
 }
 
-function getRadiators() {
+// these functions update all radiators and pallets on the delivery, and the delivery itself
+// (1/3) first, get all pallet ids that are on the delivery
+function getDeliveryPallets() { // get pallet ids on delivery
 	let deliveryDateTime = gbc('#delivery-date-time').val();
 	
-	let query = ' { boards(ids:' + id_radiatorBoard + ') { items_page(limit: 500, query_params: {rules: [{ column_id: "' + id_radiatorBoardOutPalletDispatch + '", compare_value: [' + deliveryDateTime + '], operator:any_of}] } ) { items { ' + fields_radiators + ' } } } } ';
+	let query = ' { boards(ids:' + id_palletBoard + ') { items_page(limit: 500, query_params: {rules: [{ column_id: "' + id_palletBoardDelivery + '", compare_value: [' + deliveryDateTime + '], operator:any_of}] } ) { items { ' + fields_pallets + ' } } } } ';
+	
+	mondayAPI(query, function(data) {
+		let pallets = new Pallets(data);
+		
+		var palletIdsOnDelivery = [];
+		
+		for (var i = 0; i < pallets.all.length; i++) {
+			let pallet = pallets.all[i];
+			
+			palletIdsOnDelivery.push(pallet.id);
+		}
+		
+		getDeliveryRadiators(palletIdsOnDelivery);
+	});
+}
+
+// these functions update all radiators and pallets on the delivery, and the delivery itself
+// (2/3) next, get all radiator ids that are contained any of the pallet ids just retrieved
+function getDeliveryRadiators(palletIdsOnDelivery) { // get radiator ids on delivery
+	let query = ' { boards(ids:' + id_radiatorBoard + ') { items_page(limit: 500, query_params: {rules: [{ column_id: "' + id_radiatorBoardOutPallet + '", compare_value: [' + palletIdsOnDelivery + '], operator:any_of}] } ) { items { ' + fields_radiators + ' } } } } ';
 	
 	mondayAPI(query, function(data) {
 		let radiators = new Radiators(data);
 		
 		var radiatorsOnDelivery = '';
+		var radiatorIdsOnDelivery = [];
 		
 		for (var i = 0; i < radiators.all.length; i++) {
 			let radiator = radiators.all[i];
 			
 			radiatorsOnDelivery += radiator.name + ' [' + radiator.colour + '] - ' + radiator.friendlyPurchaseOrderName + ' (out on pallet ' + radiator.outPallet + ')<br />';
+			radiatorIdsOnDelivery.push(radiator.id);
 		}
 		
-		saveDeliveryWithRadiators(radiatorsOnDelivery);
+		deliveryUpdate(palletIdsOnDelivery, radiatorIdsOnDelivery, radiatorsOnDelivery)
 	});
 }
 
-function saveDeliveryWithRadiators(deliveryRadiators) {
+// these functions update all radiators and pallets on the delivery, and the delivery itself
+// (3/3) using the retrieved pallet & radiator ids, generate queries for pallets, radiators
+// and the delivery; all are combined into a single query
+function deliveryUpdate(palletIdsOnDelivery, radiatorIdsOnDelivery, radiatorsOnDelivery) { // create update queries from pallet ids, and radiator ids
+	var query2 = 'mutation {';
+	
+	query2 += deliveryPalletsUpdateQuery(palletIdsOnDelivery);
+	query2 += deliveryRadiatorsUpdateQuery(radiatorIdsOnDelivery);
+	query2 += deliveryUpdateQuery(radiatorsOnDelivery);
+	
+	query2 += ' } ';
+	
+	console.log(query2);
+	
+	mondayAPI(query2, function(data) {
+		UIkit.notification('Delivery saved', 'success');
+	});
+}
+
+// this function takes a list of pallet ids and creates an update query for each one, setting it marked as delivered
+function deliveryPalletsUpdateQuery(palletIdsOnDelivery) { // create update query for pallets
+	var query = '';
+	
+	for (var j = 0; j <= palletIdsOnDelivery.length; j++) {
+		let palletId = palletIdsOnDelivery[j];
+		
+		if ((palletId != undefined) && (palletId != '')) {
+			let checkboxJson = JSON.stringify(' {"check__1" : {"checked" : "true"}} ');
+			
+			query += ' updatePallet' + j + ': change_multiple_column_values(item_id:' + palletId + ', board_id:' + id_palletBoard + ', column_values: ' + checkboxJson + ') { id } ';
+		}
+	}
+	
+	return query;
+}
+
+// this function takes a list of radiator ids and creates an update query for each one, setting it marked as delivered
+function deliveryRadiatorsUpdateQuery(radiatorIdsOnDelivery) { // create update query for radiators
+	var query = '';
+	
+	for (var j = 0; j <= radiatorIdsOnDelivery.length; j++) {
+		let radiatorId = radiatorIdsOnDelivery[j];
+		
+		if ((radiatorId != undefined) && (radiatorId != '')) {
+			let checkboxJson = JSON.stringify(' {"check__1" : {"checked" : "true"}} ');
+			
+			query += ' updateRadiator' + j + ': change_multiple_column_values(item_id:' + radiatorId + ', board_id:' + id_radiatorBoard + ', column_values: ' + checkboxJson + ') { id } ';
+		}
+	}
+	
+	return query;
+}
+
+// this function takes a list of all radiators (
+function deliveryUpdateQuery(radiatorsOnDelivery) { // create update query for delivery
 	let deliveryDateTime = gbc('#delivery-date-time').val();
 	let signature = document.getElementById('canvas').toDataURL();
-  
+	
 	const currentDate = new Date();
 	
 	const currentHour = currentDate.getHours();
 	const currentMinute = currentDate.getMinutes();
-  
-	var query = 'mutation {';
+	
+	var query = ' updateDelivery: ';
 	
 	var personUpdate = '"' + id_deliveryBoardDriver + '": {"personsAndTeams": [{"id": ' + userId + ', "kind": "person"}] }, ';
 	var hourUpdate = '"' + id_deliveryBoardTime + '" : {"hour" : ' + currentHour + ', "minute" : ' + currentMinute + '}, ';
 	var signatureUpdate = '"' + id_deliveryBoardSignature + '" : "' + encodeURIComponent(signature) + '", ';
-	var radiatorUpdate = '"' + id_deliveryBoardRadiators + '" : "' + encodeURIComponent(deliveryRadiators) + '"';
+	var radiatorUpdate = '"' + id_deliveryBoardRadiators + '" : "' + encodeURIComponent(radiatorsOnDelivery) + '"';
 	
 	var updates = JSON.stringify(' { ' + personUpdate + hourUpdate + signatureUpdate + radiatorUpdate + ' } ');
 	
 	query += 'change_multiple_column_values(item_id: ' + deliveryDateTime + ', board_id: ' + id_deliveryBoard + ', column_values: ' + updates + ') { id }';
 	
-	query += ' }';
-	
-	getDeliveries();
-	
-	mondayAPI(query, function(data) {
-		UIkit.notification('Delivery saved', 'success');
-	});
+	return query;
 }
