@@ -32,7 +32,9 @@ document.addEventListener("DOMContentLoaded", function() {
 function getPallets() {
 	// let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page(limit:500, query_params: { rules: [ { column_id : "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator:is_empty } ] } ) { items { ' + fields_pallets + ' } } } } ';
 	
-	let query = ' { boards(ids: [' + id_palletBoard + ']) { items_page( limit: 500 query_params: {rules: [{column_id: "check__1", compare_value: [null], operator: is_empty}]} ) { items { id name column_values(ids:["link_to_radiators_2"]) { id text ... on BoardRelationValue { linked_item_ids } } } } } } ';
+	// let query = ' { boards(ids: [' + id_palletBoard + ']) { items_page( limit: 500 query_params: {rules: [{column_id: "check__1", compare_value: [null], operator: is_empty}]} ) { items { id name column_values(ids:["link_to_radiators_2"]) { id text ... on BoardRelationValue { linked_item_ids } } } } } } ';
+	
+	let query = ' { boards(ids: [' + id_palletBoard + ']) { items_page( limit: 500 query_params: {rules: [{column_id: "check__1", compare_value: [""], operator: is_empty}]} ) { items { id name column_values(ids:["link_to_radiators_2"]) { id text ... on BoardRelationValue { linked_item_ids } } } } } } ';
 	
 	console.log(query);
 	
@@ -69,7 +71,10 @@ function getPallets() {
 function getRadiators() {
 	// let query = ' { boards (ids: [' + id_radiatorBoard + ']) { items_page (limit: 500, query_params: {rules: [{ column_id: "' + id_radiatorBoardOutReceived + '", compare_value: [null], operator:is_not_empty }, { column_id: "' + id_radiatorBoardOutPalletDispatchTime + '", compare_value: [null], operator:is_empty }], operator: and }) { cursor items { ' + fields_radiators + ' } } } } ';
 	
-	let query = ' { boards(ids: [5856106281]) { items_page( limit: 500 query_params: {rules: [{column_id: "checkbox", compare_value: [null], operator: is_not_empty}, {column_id: "check__1", compare_value: [null], operator: is_empty}], operator: and} ) { cursor items { id name group { title } column_values(ids:["text", "connect_boards", "check", "mirror_1", "checkbox"]) { id text ... on BoardRelationValue { display_value linked_item_ids } ... on MirrorValue { display_value } } } } } } ';
+	// let query = ' { boards(ids: [5856106281]) { items_page( limit: 500 query_params: {rules: [{column_id: "checkbox", compare_value: [null], operator: is_not_empty}, {column_id: "check__1", compare_value: [null], operator: is_empty}], operator: and} ) { cursor items { id name group { title } column_values(ids:["text", "connect_boards", "check", "mirror_1", "checkbox"]) { id text ... on BoardRelationValue { display_value linked_item_ids } ... on MirrorValue { display_value } } } } } } ';
+	
+	let query = ' { boards(ids: [5856106281]) { items_page( limit: 500 query_params: {rules: [{column_id: "checkbox", compare_value: [""], operator: is_not_empty}, {column_id: "check__1", compare_value: [""], operator: is_empty}], operator: and} ) { cursor items { id name group { title } column_values(ids:["text", "connect_boards", "check", "mirror_1", "checkbox"]) { id text ... on BoardRelationValue { display_value linked_item_ids } ... on MirrorValue { display_value } } } } } } ';
+	
 	
 	mondayAPI(query, function(data) {
 		radiators = new Radiators(data);
