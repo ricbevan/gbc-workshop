@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getOrders() {
-	let query = ' { boards(ids:' + id_ordersBoard + ') { groups(ids:["topics"]) { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardReceived + '", compare_value: [null], operator: is_empty } ] } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '", "' + id_ordersBoardCreated + '"] ) { id text ... on BoardRelationValue { display_value } } } } } } }';
+	// let query = ' { boards(ids:' + id_ordersBoard + ') { groups(ids:["topics"]) { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardReceived + '", compare_value: [null], operator: is_empty } ] } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '", "' + id_ordersBoardCreated + '"] ) { id text ... on BoardRelationValue { display_value } } } } } } }';
+	
+	let query = ' { boards(ids:' + id_ordersBoard + ') { groups(ids:["topics"]) { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardReceived + '", compare_value: [""], operator: is_empty } ] } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '", "' + id_ordersBoardCreated + '"] ) { id text ... on BoardRelationValue { display_value } } } } } } }';
 	
 	mondayAPI(query, function(data) {
 		

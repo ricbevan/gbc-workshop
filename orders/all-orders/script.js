@@ -9,7 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getOrders() {
-	let query = ' { boards(ids:' + id_ordersBoard + ') { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardOrderNumber + '", compare_value: [null], operator: is_not_empty } ] order_by: {column_id: "' + id_ordersBoardOrderNumber + '", direction: desc } } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '", "' + id_ordersBoardCreated + '"] ) { id text ... on BoardRelationValue { display_value } } } } } }';
+	// let query = ' { boards(ids:' + id_ordersBoard + ') { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardOrderNumber + '", compare_value: [null], operator: is_not_empty } ] order_by: {column_id: "' + id_ordersBoardOrderNumber + '", direction: desc } } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '", "' + id_ordersBoardCreated + '"] ) { id text ... on BoardRelationValue { display_value } } } } } }';
+	
+	let query = ' { boards(ids:' + id_ordersBoard + ') { items_page( limit: 500, query_params: { rules: [ { column_id:"' + id_ordersBoardOrderNumber + '", compare_value: [""], operator: is_not_empty } ] order_by: {column_id: "' + id_ordersBoardOrderNumber + '", direction: desc } } ) { items { id name column_values(ids: [ "' + id_ordersBoardOrderNumber + '", "' + id_ordersBoardReceived + '", "' + id_ordersBoardSupplier + '", "' + id_ordersBoardPartial + '", "' + id_ordersBoardCreated + '"] ) { id text ... on BoardRelationValue { display_value } } } } } }';
+	
+	console.log(query);
 	
 	mondayAPI(query, function(data) {
 		

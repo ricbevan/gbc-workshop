@@ -68,7 +68,9 @@ function addItemToOrder() {
 }
 
 function getNewOrderNumber() {
-	let query = ' { boards(ids:' + id_ordersBoard + ') { items_page( limit: 1 query_params: { rules: [ {column_id: "' + id_ordersBoardOrderNumber + '", compare_value: [null], operator: is_not_empty} ], order_by: {column_id: "' + id_ordersBoardOrderNumber + '", direction: desc } } ) { items { id name column_values( ids: ["' + id_ordersBoardOrderNumber + '"] ) { id text } } } } } ';
+	// let query = ' { boards(ids:' + id_ordersBoard + ') { items_page( limit: 1 query_params: { rules: [ {column_id: "' + id_ordersBoardOrderNumber + '", compare_value: [null], operator: is_not_empty} ], order_by: {column_id: "' + id_ordersBoardOrderNumber + '", direction: desc } } ) { items { id name column_values( ids: ["' + id_ordersBoardOrderNumber + '"] ) { id text } } } } } ';
+	
+	let query = ' { boards(ids:' + id_ordersBoard + ') { items_page( limit: 1 query_params: { rules: [ {column_id: "' + id_ordersBoardOrderNumber + '", compare_value: [""], operator: is_not_empty} ], order_by: {column_id: "' + id_ordersBoardOrderNumber + '", direction: desc } } ) { items { id name column_values( ids: ["' + id_ordersBoardOrderNumber + '"] ) { id text } } } } } ';
 	
 	mondayAPI(query, function(data) {
 		

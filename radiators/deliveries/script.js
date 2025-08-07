@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getDeliveries() {
-	let query = ' { boards(ids:' + id_deliveryBoard + ') { items_page (limit:500, query_params: { rules: [ { column_id: "' + id_deliveryBoardDate + '", compare_value: ["TODAY"], operator: greater_than_or_equals}, {column_id: "' + id_deliveryBoardPallets + '", compare_value: [null], operator:is_not_empty } ], operator: or } ) { items { ' + fields_deliveries + ' } } } } ';
+	let query = ' { boards(ids:' + id_deliveryBoard + ') { items_page (limit:500, query_params: { rules: [ { column_id: "' + id_deliveryBoardDate + '", compare_value: ["TODAY"], operator: greater_than_or_equals}, {column_id: "' + id_deliveryBoardPallets + '", compare_value: [""], operator:is_not_empty } ], operator: or } ) { items { ' + fields_deliveries + ' } } } } ';
 	
 	mondayAPI(query, function(data) {
 		let deliveries = new Deliveries(data);
@@ -47,7 +47,7 @@ function getPallets() {
 	if (deliveryDateTime != '') {
 		// let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page (limit:500, query_params: { rules: [ { column_id : "' + id_palletBoardDeliveryTime + '", compare_value: [null], operator:is_empty } ] } ) { items { ' + fields_pallets + ' } } } } ';
 		
-		let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page (limit:500, query_params: { rules: [ {column_id: "check__1", compare_value: [null], operator: is_empty} ] } ) { items { ' + fields_pallets + ' } } } } ';
+		let query = ' { boards (ids: [' + id_palletBoard + ']) { items_page (limit:500, query_params: { rules: [ {column_id: "check__1", compare_value: [""], operator: is_empty} ] } ) { items { ' + fields_pallets + ' } } } } ';
 		
 		mondayAPI(query, function(data) {
 			
